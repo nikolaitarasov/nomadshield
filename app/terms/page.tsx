@@ -118,7 +118,8 @@ export default function TermsPage() {
       <section>
         <h2>9. Third-party services</h2>
         <p>
-          Payments run on Stripe. Hosting may run on Render or similar providers. Optional analytics use GoatCounter.
+          Payments run on Stripe. Hosting may run on Render or similar providers. Optional analytics use GoatCounter and
+          Ahrefs Web Analytics.
           Optional auth and storage may use Supabase. Government and mailbox sites we link to are not under our control.
           Their terms apply when you leave NomadShield.
         </p>

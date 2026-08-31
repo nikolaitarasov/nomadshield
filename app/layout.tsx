@@ -1,3 +1,4 @@
+import { AhrefsAnalytics } from "@/components/ahrefs-analytics";
 import { GoatCounter } from "@/components/goat-counter";
 import { Providers } from "@/components/providers";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, siteUrl } from "@/lib/seo";
@@ -56,6 +57,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <Providers>{children}</Providers>
         <GoatCounter />
+        <AhrefsAnalytics />
       </body>
     </html>
   );

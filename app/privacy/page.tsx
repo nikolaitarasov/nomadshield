@@ -57,7 +57,7 @@ export default function PrivacyPage() {
         <ul>
           <li>To provide the calculator, playbooks, vault, PDFs, and paid plan access</li>
           <li>To process payments and prevent fraud</li>
-          <li>To understand which pages are used (aggregated traffic via GoatCounter)</li>
+          <li>To understand which pages are used (aggregated traffic via GoatCounter and Ahrefs Web Analytics)</li>
           <li>To secure the Service and comply with law</li>
           <li>To contact you about your account or a transaction if you have given us an email</li>
         </ul>
@@ -83,6 +83,14 @@ export default function PrivacyPage() {
             .
           </li>
           <li>
+            <strong className="text-foreground">Ahrefs Web Analytics</strong> — privacy-oriented pageview and SEO
+            analytics (no advertising cookies). See{" "}
+            <a href="https://ahrefs.com/web-analytics" target="_blank" rel="noreferrer">
+              Ahrefs Web Analytics
+            </a>
+            .
+          </li>
+          <li>
             <strong className="text-foreground">Hosting</strong> — the Service may run on Render or a similar cloud host
             in the United States or a region they select.
           </li>
@@ -100,10 +108,10 @@ export default function PrivacyPage() {
         <h2>5. Cookies, local storage, and analytics</h2>
         <p>
           We use a session cookie so you stay signed in. Calculator drafts, checklist state, and (in demo mode) almost
-          all app data may live in your browser’s local storage or IndexedDB until you clear it. GoatCounter counts
-          pageviews without a typical advertising cookie; it is designed to avoid identifying you across the web. You
-          can block the script with a content blocker. Essential cookies for login cannot be refused if you want an
-          authenticated session.
+          all app data may live in your browser’s local storage or IndexedDB until you clear it. GoatCounter and Ahrefs
+          Web Analytics count pageviews without a typical advertising cookie; they are designed to avoid identifying you
+          across the web. You can block the scripts with a content blocker. Essential cookies for login cannot be
+          refused if you want an authenticated session.
         </p>
       </section>
 
