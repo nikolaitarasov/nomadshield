@@ -1,26 +1,23 @@
-import Script from "next/script";
+"use client";
 
-function endpoint() {
-  const site = process.env.NEXT_PUBLIC_GOATCOUNTER_SITE?.trim() || "nomadshield";
-  if (site.startsWith("http")) return site.endsWith("/count") ? site : `${site.replace(/\/$/, "")}/count`;
-  if (site.includes(".")) return `https://${site.replace(/\/count$/, "")}/count`;
-  return `https://${site}.goatcounter.com/count`;
-}
+import { useEffect } from "react";
+
+const ENDPOINT = "https://nomadshield.goatcounter.com/count";
 
 export function GoatCounter() {
-  const src = endpoint();
+  useEffect(() => {
+    if (document.querySelector("script[data-goatcounter]")) return;
+    const s = document.createElement("script");
+    s.setAttribute("data-goatcounter", ENDPOINT);
+    s.async = true;
+    s.src = "//gc.zgo.at/count.js";
+    document.body.appendChild(s);
+  }, []);
+
   return (
-    <>
-      <Script
-        src="https://gc.zgo.at/count.js"
-        strategy="afterInteractive"
-        {...{ "data-goatcounter": src }}
-      />
-      <noscript>
-        {/* GoatCounter fallback pixel */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${src}?p=/noscript`} alt="" className="hidden" />
-      </noscript>
-    </>
+    <noscript>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`${ENDPOINT}?p=/noscript`} alt="" className="hidden" />
+    </noscript>
   );
 }
