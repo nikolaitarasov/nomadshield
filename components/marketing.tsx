@@ -12,6 +12,7 @@ const NAV = [
   { href: "/pricing", label: "Pricing" },
   { href: "/savvy-nomad", label: "vs SavvyNomad" },
   { href: "/compare", label: "Compare" },
+  { href: "/blog", label: "Blog" },
   { href: "/faq", label: "FAQ" },
 ];
 
@@ -110,8 +111,18 @@ export function MarketingFooter() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/blog" className="hover:text-foreground">
+                    Blog
+                  </Link>
+                </li>
+                <li>
                   <Link href="/faq" className="hover:text-foreground">
                     FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sitemap.xml" className="hover:text-foreground">
+                    Sitemap
                   </Link>
                 </li>
               </ul>

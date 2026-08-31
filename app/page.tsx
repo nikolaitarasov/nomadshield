@@ -2,7 +2,9 @@ import { Calculator, ShieldDemo } from "@/components/calculator";
 import { JsonLd } from "@/components/json-ld";
 import { MarketingShell } from "@/components/marketing";
 import { Card } from "@/components/ui";
+import { POSTS } from "@/lib/blog";
 import { DEFAULT_DESCRIPTION, siteUrl } from "@/lib/seo";
+import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -268,6 +270,30 @@ export default function HomePage() {
             SavvyNomad vs NomadShield — full write-up →
           </Link>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-wider text-accent">From the playbook</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">Guides built to rank — and to be true</h2>
+          </div>
+          <Link href="/blog" className="hidden text-sm text-accent hover:underline sm:inline">
+            All posts →
+          </Link>
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {POSTS.map((post) => (
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="surface p-5 hover:border-accent/30">
+              <p className="text-xs text-muted">{formatDate(post.date)}</p>
+              <h3 className="mt-2 font-medium">{post.title}</h3>
+              <p className="mt-2 text-sm text-muted">{post.description}</p>
+            </Link>
+          ))}
+        </div>
+        <Link href="/blog" className="mt-4 inline-flex text-sm text-accent hover:underline sm:hidden">
+          All posts →
+        </Link>
       </section>
     </MarketingShell>
   );

@@ -65,6 +65,30 @@ Set `NEXT_PUBLIC_APP_URL` to the Render URL. Stripe Checkout Sessions work with 
 Webhook endpoint: `https://<your-service>.onrender.com/api/stripe/webhook`  
 Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`.
 
+### Google Search Console (sitemap)
+
+1. Set `NEXT_PUBLIC_APP_URL` to the live Render URL **before** the build so `/sitemap.xml` lists production URLs, not localhost.
+2. After deploy, open `https://<your-service>.onrender.com/sitemap.xml`.
+3. In [Google Search Console](https://search.google.com/search-console) add the property → Sitemaps → submit `https://<your-service>.onrender.com/sitemap.xml`.
+4. `robots.txt` already points crawlers at that sitemap.
+
+The sitemap includes the homepage, SavvyNomad alternative page, pricing/compare/FAQ, the blog index, and every post.
+
+### GoatCounter (traffic)
+
+Privacy-friendly pageviews, no cookie banner required.
+
+1. Create a site at [goatcounter.com](https://www.goatcounter.com/) (free).
+2. Set the site code in Render:
+
+```
+NEXT_PUBLIC_GOATCOUNTER_SITE=nomadshield
+```
+
+That loads `https://nomadshield.goatcounter.com`. If you picked a different code (or a custom domain), put that value instead. Redeploy — `NEXT_PUBLIC_*` is baked in at build time.
+
+Stats: `https://<your-code>.goatcounter.com`
+
 ## Quick start
 
 ```bash

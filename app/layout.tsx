@@ -1,3 +1,4 @@
+import { GoatCounter } from "@/components/goat-counter";
 import { Providers } from "@/components/providers";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, siteUrl } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -54,6 +55,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <Providers>{children}</Providers>
+        <GoatCounter />
       </body>
     </html>
   );

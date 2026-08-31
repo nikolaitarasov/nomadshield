@@ -37,3 +37,5 @@ services:
         sync: false
       - key: NEXT_PUBLIC_STRIPE_LINK_SHIELD_YEAR
         sync: false
+      - key: NEXT_PUBLIC_GOATCOUNTER_SITE
+        value: nomadshield

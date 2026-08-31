@@ -15,12 +15,24 @@ export default function Icon() {
           justifyContent: "center",
           background: "#07090c",
           borderRadius: 8,
-          color: "#34d399",
-          fontSize: 18,
-          fontWeight: 700,
         }}
       >
-        N
+        <div
+          style={{
+            width: 20,
+            height: 22,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "1.5px solid #34d399",
+            borderRadius: "10px 10px 10px 10px",
+            color: "#34d399",
+            fontSize: 13,
+            fontWeight: 700,
+          }}
+        >
+          N
+        </div>
       </div>
     ),
     size,
