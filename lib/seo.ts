@@ -1,22 +1,8 @@
+/** Canonical public origin. Hardcoded so sitemap/robots never emit localhost. */
+export const CANONICAL_ORIGIN = "https://nomadshield.io";
+
 export function siteUrl() {
-  return publicSiteUrl() ?? "http://localhost:3000";
-}
-
-function stripSlash(raw: string) {
-  return raw.trim().replace(/\/$/, "");
-}
-
-function isLocalhost(urlOrHost: string) {
-  return /localhost|127\.0\.0\.1/i.test(urlOrHost);
-}
-
-/** Public origin for sitemap/robots/canonicals. Never returns localhost. */
-export function publicSiteUrl(): string | null {
-  const env = process.env.NEXT_PUBLIC_APP_URL;
-  if (env && !isLocalhost(env)) return stripSlash(env);
-  const render = process.env.RENDER_EXTERNAL_URL;
-  if (render && !isLocalhost(render)) return stripSlash(render);
-  return null;
+  return CANONICAL_ORIGIN;
 }
 
 export const DEFAULT_TITLE =

@@ -67,10 +67,11 @@ Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`
 
 ### Google Search Console (sitemap)
 
-1. Set `NEXT_PUBLIC_APP_URL` to the live Render URL **before** the build so `/sitemap.xml` lists production URLs, not localhost.
-2. After deploy, open `https://<your-service>.onrender.com/sitemap.xml`.
-3. In [Google Search Console](https://search.google.com/search-console) add the property → Sitemaps → submit `https://<your-service>.onrender.com/sitemap.xml`.
-4. `robots.txt` already points crawlers at that sitemap.
+Canonical URLs are hardcoded to `https://nomadshield.io` (sitemap, robots, Open Graph). Localhost is never listed.
+
+1. After deploy, open `https://nomadshield.io/sitemap.xml`.
+2. In [Google Search Console](https://search.google.com/search-console) add the `nomadshield.io` property → Sitemaps → submit `https://nomadshield.io/sitemap.xml`.
+3. `robots.txt` already points crawlers at that sitemap.
 
 The sitemap includes the homepage, SavvyNomad alternative page, pricing/compare/FAQ, the blog index, and every post.
 

@@ -1,24 +1,10 @@
 import { POSTS } from "@/lib/blog";
 import { PUBLIC_PLAYBOOKS } from "@/lib/playbooks";
-import { publicSiteUrl } from "@/lib/seo";
+import { siteUrl } from "@/lib/seo";
 import type { MetadataRoute } from "next";
-import { headers } from "next/headers";
 
-export const dynamic = "force-dynamic";
-
-async function origin() {
-  const fromEnv = publicSiteUrl();
-  if (fromEnv) return fromEnv;
-  const h = await headers();
-  const host = (h.get("x-forwarded-host") || h.get("host") || "").split(",")[0].trim();
-  const proto = h.get("x-forwarded-proto") || "https";
-  if (host && !/localhost|127\.0\.0\.1/i.test(host)) return `${proto}://${host}`.replace(/\/$/, "");
-  return null;
-}
-
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = await origin();
-  if (!base) return [];
+export default function sitemap(): MetadataRoute.Sitemap {
+  const base = siteUrl();
   const now = new Date();
   const pages: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
@@ -43,5 +29,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly",
     priority: 0.85,
   }));
-  return [...pages, ...playbooks, ...posts].filter((entry) => !/localhost|127\.0\.0\.1/i.test(entry.url));
+  return [...pages, ...playbooks, ...posts];
 }
