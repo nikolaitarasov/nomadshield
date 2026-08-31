@@ -9,6 +9,21 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import {
+  deleteEvidenceRow,
+  deleteOwnAccount,
+  deletePresence as cloudDeletePresence,
+  fetchWorkspace,
+  insertEvidence,
+  insertLetter,
+  insertSnapshot,
+  mergeWorkspace,
+  pushWorkspaceSlice,
+  updateLetterStatus,
+  upsertItemStatus,
+  upsertPresence as cloudUpsertPresence,
+  upsertProfile,
+} from "./cloud";
 import { DEMO_EMAIL, DEMO_PASSWORD, DEMO_USER_ID, DISCLAIMER_VERSION, SESSION_COOKIE, STORAGE_KEY } from "./constants";
 import { emptyDB, seedDemoUser } from "./demo-seed";
 import { getPlaybook } from "./playbooks";
@@ -126,27 +141,19 @@ function initMigration(userId: string, target: TargetState, db: AppDB): AppDB {
   };
 }
 
-async function cloudUpsertProfile(profile: Profile) {
-  const sb = getSupabaseBrowser();
-  if (!sb) return;
-  try {
-    await sb.from("profiles").upsert({
-      id: profile.id,
-      full_name: profile.fullName,
-      from_state: profile.fromState,
-      target_state: profile.targetState,
-      filing_status: profile.filingStatus,
-      annual_income: profile.annualIncome,
-      income_types: profile.incomeTypes,
-      owns_property_in_from_state: profile.ownsPropertyInFromState,
-      mailbox_provider: profile.mailboxProvider,
-      mailbox_address: profile.mailboxAddress,
-      plan: profile.plan,
-      created_at: profile.createdAt,
-    });
-  } catch {
-    /* optional */
-  }
+async function applyCloudSession(userId: string, email: string) {
+  const ws = await fetchWorkspace(userId, email);
+  if (!ws) return false;
+  setSessionCookie(userId);
+  patch((d) => {
+    let next = mergeWorkspace(d, userId, email, ws);
+    if (!next.migrations.some((m) => m.userId === userId && m.status === "active")) {
+      next = initMigration(userId, next.profiles[userId]?.targetState ?? "FL", next);
+      void pushWorkspaceSlice(next, userId);
+    }
+    return applyEntitlement(next, userId);
+  });
+  return true;
 }
 
 function useDB(): AppDB {
@@ -167,7 +174,11 @@ type AppContextValue = {
   inbound: AppDB["inbound"];
   snapshots: Snapshot[];
   login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
-  signup: (email: string, password: string, fullName?: string) => Promise<{ ok: boolean; error?: string; userId?: string }>;
+  signup: (
+    email: string,
+    password: string,
+    fullName?: string,
+  ) => Promise<{ ok: boolean; error?: string; userId?: string; needsEmail?: boolean }>;
   magicLink: (email: string) => Promise<{ ok: boolean; error?: string; demoToken?: boolean }>;
   consumeMagic: (email: string) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
@@ -197,6 +208,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     hydrateStore();
+    const client = getSupabaseBrowser();
+    if (!client) return;
+    const { data } = client.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT") {
+        setSessionCookie(null);
+        patch((d) => ({ ...d, session: null }));
+        return;
+      }
+      if (!session?.user) return;
+      if (event !== "INITIAL_SESSION" && event !== "SIGNED_IN") return;
+      await applyCloudSession(session.user.id, session.user.email ?? "");
+    });
+    return () => data.subscription.unsubscribe();
   }, []);
 
   const profile = db.session ? db.profiles[db.session.userId] ?? null : null;
@@ -216,30 +240,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error || !data.user) return { ok: false, error: error?.message ?? "Sign-in failed" };
       const userId = data.user.id;
+      const mail = data.user.email ?? email.trim().toLowerCase();
+      const loaded = await applyCloudSession(userId, mail);
+      if (loaded) return { ok: true };
       setSessionCookie(userId);
       patch((d) => {
-        let next = d;
-        if (email.toLowerCase() === DEMO_EMAIL && !next.profiles[userId] && !next.profiles[DEMO_USER_ID]) {
-          next = seedDemoUser(next);
-        }
-        if (!next.profiles[userId]) {
-          const cloned = next.profiles[DEMO_USER_ID];
-          next = {
-            ...next,
-            profiles: {
-              ...next.profiles,
-              [userId]: cloned
-                ? { ...cloned, id: userId, email }
-                : {
-                    ...blankProfile(userId, email),
-                  },
-            },
-          };
-          if (!next.migrations.some((m) => m.userId === userId)) {
-            next = initMigration(userId, next.profiles[userId].targetState, next);
-          }
-        }
-        return applyEntitlement({ ...next, session: { userId, email } }, userId);
+        const profile = blankProfile(userId, mail);
+        let next: AppDB = {
+          ...d,
+          session: { userId, email: mail },
+          profiles: { ...d.profiles, [userId]: profile },
+        };
+        next = initMigration(userId, profile.targetState, next);
+        next = applyEntitlement(next, userId);
+        void pushWorkspaceSlice(next, userId);
+        return next;
       });
       return { ok: true };
     }
@@ -272,8 +287,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const sb = getSupabaseBrowser();
     if (sb) {
-      const { data, error } = await sb.auth.signUp({ email: normalized, password });
+      const { data, error } = await sb.auth.signUp({
+        email: normalized,
+        password,
+        options: {
+          data: { full_name: fullName ?? "" },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
       if (error || !data.user) return { ok: false, error: error?.message ?? "Sign-up failed" };
+      if (!data.session) return { ok: true, userId: data.user.id, needsEmail: true };
       const userId = data.user.id;
       setSessionCookie(userId);
       patch((d) => {
@@ -281,12 +304,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         let next: AppDB = {
           ...d,
           session: { userId, email: normalized },
-          passwordByUser: { ...d.passwordByUser, [userId]: password },
           profiles: { ...d.profiles, [userId]: profile },
         };
         next = initMigration(userId, profile.targetState, next);
         next = applyEntitlement(next, userId);
-        cloudUpsertProfile(next.profiles[userId]);
+        void pushWorkspaceSlice(next, userId);
         return next;
       });
       return { ok: true, userId };
@@ -347,7 +369,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const current = d.profiles[userId];
       if (!current) return d;
       const nextP = { ...current, ...partial };
-      cloudUpsertProfile(nextP);
+      void upsertProfile(nextP);
       return { ...d, profiles: { ...d.profiles, [userId]: nextP } };
     });
   }, []);
@@ -363,7 +385,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (partial.targetState && partial.targetState !== current.targetState) {
         next = initMigration(userId, partial.targetState, next);
       }
-      cloudUpsertProfile(nextP);
+      void pushWorkspaceSlice(next, userId);
       return next;
     });
   }, []);
@@ -384,6 +406,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             : i,
         ),
       }));
+      void upsertItemStatus(userId, stepKey, itemKey, status, metadata);
     },
     [],
   );
@@ -405,21 +428,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (!userId) return;
       patch((d) => {
         const without = d.presence.filter((p) => !(p.userId === userId && p.date === date));
-        if (!bucket) return { ...d, presence: without };
+        if (!bucket) {
+          void cloudDeletePresence(userId, date);
+          return { ...d, presence: without };
+        }
+        const day = {
+          id: uid(),
+          userId,
+          date,
+          bucket,
+          formerState: extra?.formerState ?? d.profiles[userId]?.fromState ?? null,
+          note: extra?.note ?? "",
+          evidenceId: null,
+        };
+        void cloudUpsertPresence(day);
         const next = {
           ...d,
-          presence: [
-            ...without,
-            {
-              id: uid(),
-              userId,
-              date,
-              bucket,
-              formerState: extra?.formerState ?? d.profiles[userId]?.fromState ?? null,
-              note: extra?.note ?? "",
-              evidenceId: null,
-            },
-          ],
+          presence: [...without, day],
         };
         if (bucket === "target") {
           next.items = next.items.map((i) =>
@@ -427,6 +452,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
               ? { ...i, status: "done" as ItemStatus }
               : i,
           );
+          void upsertItemStatus(userId, "presence", "mark_nights", "done");
         }
         return next;
       });
@@ -446,6 +472,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         createdAt: new Date().toISOString(),
       };
       patch((d) => ({ ...d, evidence: [rec, ...d.evidence] }));
+      void insertEvidence(rec);
       return rec;
     },
     [],
@@ -454,7 +481,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const deleteEvidence = useCallback((id: string) => {
     const userId = memory.session?.userId;
     if (!userId) return;
+    const row = memory.evidence.find((e) => e.id === id && e.userId === userId);
     patch((d) => ({ ...d, evidence: d.evidence.filter((e) => !(e.id === id && e.userId === userId)) }));
+    void deleteEvidenceRow(id, userId, row?.storagePath);
   }, []);
 
   const addLetter = useCallback((templateKey: string, recipient?: string) => {
@@ -462,22 +491,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const p = userId ? memory.profiles[userId] : null;
     if (!userId || !p) return;
     const built = letterBody(templateKey, p, recipient);
+    const letter = {
+      id: uid(),
+      userId,
+      templateKey,
+      recipient: built.recipient,
+      subject: built.subject,
+      body: built.body,
+      status: "not_sent" as LetterStatus,
+      createdAt: new Date().toISOString(),
+    };
     patch((d) => ({
       ...d,
-      letters: [
-        {
-          id: uid(),
-          userId,
-          templateKey,
-          recipient: built.recipient,
-          subject: built.subject,
-          body: built.body,
-          status: "not_sent" as LetterStatus,
-          createdAt: new Date().toISOString(),
-        },
-        ...d.letters,
-      ],
+      letters: [letter, ...d.letters],
     }));
+    void insertLetter(letter);
     if (templateKey === "voter_cancel") setItemStatus("voter_bank", "cancel_vote", "done");
     setItemStatus("letters", "generate", "done");
     setItemStatus("letters", "select_ties", "done");
@@ -488,6 +516,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       ...d,
       letters: d.letters.map((l) => (l.id === id ? { ...l, status } : l)),
     }));
+    void updateLetterStatus(id, status);
     if (status === "sent") setItemStatus("letters", "send", "done");
   }, [setItemStatus]);
 
@@ -501,6 +530,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       createdAt: new Date().toISOString(),
     };
     patch((d) => ({ ...d, snapshots: [snap, ...d.snapshots] }));
+    void insertSnapshot(snap);
   }, []);
 
   const exportJson = useCallback(() => {
@@ -523,7 +553,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const userId = memory.session?.userId;
     if (!userId) return;
     const sb = getSupabaseBrowser();
-    if (sb) await sb.auth.signOut();
+    if (sb) {
+      await deleteOwnAccount();
+      await sb.auth.signOut();
+    }
     setSessionCookie(null);
     patch((d) => ({
       session: null,
@@ -552,6 +585,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const nextP = { ...current, targetState: state };
       let next = { ...d, profiles: { ...d.profiles, [userId]: nextP } };
       next = initMigration(userId, state, next);
+      void pushWorkspaceSlice(next, userId);
       return next;
     });
   }, []);

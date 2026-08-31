@@ -1,5 +1,5 @@
--- NomadShield schema
--- Apply with: supabase db reset   OR   paste into the SQL editor.
+-- NomadShield production schema
+-- Idempotent. Apply via SQL editor, Management API, or `supabase db push`.
 -- RLS: users can only CRUD their own rows.
 
 create extension if not exists "pgcrypto";
@@ -62,6 +62,7 @@ create table if not exists public.presence_days (
   bucket text not null check (bucket in ('target', 'former', 'other')),
   former_state text,
   note text,
+  evidence_id uuid,
   created_at timestamptz not null default now(),
   unique (user_id, date)
 );
@@ -76,6 +77,8 @@ create table if not exists public.evidence (
   jurisdiction text,
   amount numeric,
   note text,
+  size bigint,
+  mime_type text,
   created_at timestamptz not null default now()
 );
 
@@ -84,10 +87,23 @@ create table if not exists public.letters (
   user_id uuid not null references auth.users (id) on delete cascade,
   template_key text not null,
   recipient text,
+  subject text,
   body text,
   status text not null default 'not_sent',
   created_at timestamptz not null default now()
 );
+
+alter table public.presence_days add column if not exists evidence_id uuid;
+alter table public.evidence add column if not exists size bigint;
+alter table public.evidence add column if not exists mime_type text;
+alter table public.letters add column if not exists subject text;
+
+create index if not exists checklist_items_user_idx on public.checklist_items (user_id);
+create index if not exists presence_days_user_idx on public.presence_days (user_id);
+create index if not exists evidence_user_idx on public.evidence (user_id);
+create index if not exists letters_user_idx on public.letters (user_id);
+create index if not exists migrations_user_idx on public.migrations (user_id);
+create index if not exists snapshots_user_idx on public.calculator_snapshots (user_id);
 
 alter table public.profiles enable row level security;
 alter table public.calculator_snapshots enable row level security;
@@ -97,37 +113,60 @@ alter table public.presence_days enable row level security;
 alter table public.evidence enable row level security;
 alter table public.letters enable row level security;
 
+drop policy if exists "profiles_own" on public.profiles;
 create policy "profiles_own" on public.profiles
   for all using (auth.uid() = id) with check (auth.uid() = id);
 
+drop policy if exists "snapshots_read_own" on public.calculator_snapshots;
 create policy "snapshots_read_own" on public.calculator_snapshots
   for select using (auth.uid() = user_id);
 
+drop policy if exists "snapshots_insert" on public.calculator_snapshots;
 create policy "snapshots_insert" on public.calculator_snapshots
   for insert with check (user_id is null or auth.uid() = user_id);
 
+drop policy if exists "snapshots_update_own" on public.calculator_snapshots;
 create policy "snapshots_update_own" on public.calculator_snapshots
   for update using (auth.uid() = user_id);
 
+drop policy if exists "migrations_own" on public.migrations;
 create policy "migrations_own" on public.migrations
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+drop policy if exists "checklist_own" on public.checklist_items;
 create policy "checklist_own" on public.checklist_items
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+drop policy if exists "presence_own" on public.presence_days;
 create policy "presence_own" on public.presence_days
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+drop policy if exists "evidence_own" on public.evidence;
 create policy "evidence_own" on public.evidence
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+drop policy if exists "letters_own" on public.letters;
 create policy "letters_own" on public.letters
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
-insert into storage.buckets (id, name, public)
-values ('evidence', 'evidence', false)
-on conflict (id) do nothing;
+grant usage on schema public to anon, authenticated, service_role;
+grant all on all tables in schema public to postgres, service_role, authenticated;
+grant all on all sequences in schema public to postgres, service_role, authenticated;
+grant select, insert on public.calculator_snapshots to anon;
 
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'evidence',
+  'evidence',
+  false,
+  52428800,
+  null
+)
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit;
+
+drop policy if exists "evidence_storage_own" on storage.objects;
 create policy "evidence_storage_own"
   on storage.objects for all
   using (bucket_id = 'evidence' and (storage.foldername(name))[1] = auth.uid()::text)
@@ -150,4 +189,21 @@ $$;
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+  for each row execute function public.handle_new_user();
+
+create or replace function public.delete_own_account()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    raise exception 'Not authenticated';
+  end if;
+  delete from auth.users where id = auth.uid();
+end;
+$$;
+
+revoke all on function public.delete_own_account() from public;
+grant execute on function public.delete_own_account() to authenticated;

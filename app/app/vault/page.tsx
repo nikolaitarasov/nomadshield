@@ -3,8 +3,8 @@
 import { PlanGate } from "@/components/app-shell";
 import { Badge, Button, Card, Empty, Field, Input, Select } from "@/components/ui";
 import { EVIDENCE_CATEGORIES } from "@/lib/constants";
+import { downloadEvidenceBlob, uploadEvidenceFile } from "@/lib/cloud";
 import { deleteBlob, getBlob, putBlob } from "@/lib/files";
-import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { useApp } from "@/lib/store";
 import type { EvidenceCategory } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
@@ -42,21 +42,15 @@ export default function VaultPage() {
         mimeType: file.type || "application/octet-stream",
       });
       if (!rec) continue;
-      const sb = getSupabaseBrowser();
-      if (sb) {
-        try {
-          await sb.storage.from("evidence").upload(rec.storagePath, file, { upsert: true });
-        } catch {
-          await putBlob(rec.id, file);
-        }
-      } else {
-        await putBlob(rec.id, file);
-      }
+      const uploaded = await uploadEvidenceFile(rec.storagePath, file);
+      if (!uploaded) await putBlob(rec.id, file);
     }
   }
 
   async function download(id: string, name: string) {
-    const blob = await getBlob(id);
+    const rec = evidence.find((e) => e.id === id);
+    let blob = await getBlob(id);
+    if (!blob && rec?.storagePath) blob = await downloadEvidenceBlob(rec.storagePath);
     if (!blob) return;
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -70,7 +64,7 @@ export default function VaultPage() {
     <PlanGate need="shield">
       <div className="mx-auto max-w-5xl">
         <h1 className="text-2xl font-semibold">Evidence vault</h1>
-        <p className="mt-1 text-sm text-muted">5 GB plan flag in production. This MVP stores files in IndexedDB (or Supabase Storage when configured).</p>
+        <p className="mt-1 text-sm text-muted">Files go to your private evidence bucket. If storage is offline, they stay in this browser.</p>
 
         <div
           onDragOver={(e) => {

@@ -22,6 +22,7 @@ function SignupForm() {
   const [password, setPassword] = useState("");
   const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
 
 
@@ -37,6 +38,10 @@ function SignupForm() {
     setLoading(false);
     if (!res.ok) {
       setError(res.error ?? "Could not sign up");
+      return;
+    }
+    if (res.needsEmail) {
+      setInfo("Check your email to confirm the account, then log in. The confirmation link returns you here.");
       return;
     }
     const draft = loadDraft();
@@ -98,6 +103,7 @@ function SignupForm() {
             </span>
           </label>
           {error && <p className="text-sm text-danger">{error}</p>}
+          {info && <p className="text-sm text-accent">{info}</p>}
           <Button type="submit" className="w-full" loading={loading}>
             Continue
           </Button>

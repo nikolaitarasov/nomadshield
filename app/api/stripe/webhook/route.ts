@@ -1,5 +1,5 @@
 import { getStripe } from "@/lib/stripe";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 
@@ -37,9 +37,7 @@ async function fulfill(session: Stripe.Checkout.Session) {
   const interval = session.metadata?.interval === "year" ? "year" : "month";
   const userId = session.client_reference_id || session.metadata?.userId;
   if (!userId) return;
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return;
-  const sb = createClient(url, key);
+  const sb = getSupabaseAdmin();
+  if (!sb) return;
   await sb.from("profiles").update({ plan, billing_interval: interval }).eq("id", userId);
 }

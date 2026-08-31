@@ -99,7 +99,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-The marketing site and calculator work with **zero env vars**. Auth and the dashboard use an in-browser store until you add Supabase.
+The marketing site and calculator work with **zero env vars**. Auth and the dashboard use an in-browser store until you add Supabase (then accounts, playbooks, and the vault persist in your project).
 
 ### Demo account
 
@@ -125,12 +125,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-Leave the Supabase keys empty for demo mode. When they are set:
+Leave the Supabase keys empty for a local-only demo (data stays in the browser). When they are set:
 
-1. Run `supabase/migrations/001_init.sql` (tables, RLS, `evidence` storage bucket).
-2. Optionally run `supabase/seed.sql` to create the demo user in Auth.
-3. Email/password and magic links go through Supabase Auth.
-4. Vault uploads try Storage first, then fall back to IndexedDB.
+1. Run `node scripts/provision-supabase.mjs` (schema, RLS, evidence bucket, Auth URLs, demo user).
+2. Restart `npm run dev` so `NEXT_PUBLIC_*` is picked up.
+3. Email/password and magic links go through Supabase Auth. Site URL is `https://nomadshield.io`; localhost is also allowed for redirects.
+4. Playbook, letters, presence, and vault metadata persist in Postgres. Vault files go to the private `evidence` bucket (IndexedDB is the fallback).
+
+On Render, set the same three Supabase keys **before** a new deploy (`NEXT_PUBLIC_*` is baked at build time).
 
 ## Pricing
 
