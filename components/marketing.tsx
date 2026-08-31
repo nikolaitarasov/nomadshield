@@ -158,6 +158,16 @@ export function MarketingFooter() {
                     Sign up
                   </Link>
                 </li>
+                <li>
+                  <Link href="/terms" className="hover:text-foreground">
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="hover:text-foreground">
+                    Privacy Policy
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

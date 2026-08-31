@@ -85,7 +85,17 @@ function SignupForm() {
               checked={accepted}
               onChange={(e) => setAccepted(e.target.checked)}
             />
-            <span>{DISCLAIMER_SHORT}</span>
+            <span>
+              {DISCLAIMER_SHORT} I also agree to the{" "}
+              <Link href="/terms" className="text-accent hover:underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="text-accent hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </span>
           </label>
           {error && <p className="text-sm text-danger">{error}</p>}
           <Button type="submit" className="w-full" loading={loading}>

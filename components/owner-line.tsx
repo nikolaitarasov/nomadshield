@@ -1,5 +1,6 @@
 import { OWNER } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function OwnerLine({ className }: { className?: string }) {
   const year = new Date().getFullYear();
@@ -13,6 +14,14 @@ export function OwnerLine({ className }: { className?: string }) {
       <a href={OWNER.url} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground">
         {OWNER.host}
       </a>
+      {" · "}
+      <Link href="/terms" className="underline underline-offset-2 hover:text-foreground">
+        Terms
+      </Link>
+      {" · "}
+      <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
+        Privacy
+      </Link>
       . Software, not a law firm.
     </p>
   );

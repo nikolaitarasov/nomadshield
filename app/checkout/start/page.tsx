@@ -93,7 +93,16 @@ function Start() {
           {item.button}
         </Button>
         <p className="mt-3 text-xs text-muted">
-          You’ll pay on Stripe’s hosted checkout. Card details never touch NomadShield servers.
+          You’ll pay on Stripe’s hosted checkout. Card details never touch NomadShield servers. Paying confirms you
+          accept the{" "}
+          <Link href="/terms" className="text-accent hover:underline">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="text-accent hover:underline">
+            Privacy Policy
+          </Link>
+          .
         </p>
         <Link href="/pricing" className="mt-6 text-sm text-muted hover:text-foreground">
           ← Back to pricing
