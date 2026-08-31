@@ -21,3 +21,19 @@ services:
         sync: false
       - key: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD
         value: "1"
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_KIT
+        sync: false
+      - key: STRIPE_PRICE_SHIELD_MONTH
+        sync: false
+      - key: STRIPE_PRICE_SHIELD_YEAR
+        sync: false
+      - key: NEXT_PUBLIC_STRIPE_LINK_KIT
+        sync: false
+      - key: NEXT_PUBLIC_STRIPE_LINK_SHIELD_MONTH
+        sync: false
+      - key: NEXT_PUBLIC_STRIPE_LINK_SHIELD_YEAR
+        sync: false

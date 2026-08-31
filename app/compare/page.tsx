@@ -134,7 +134,7 @@ export default function ComparePage() {
         </div>
 
         <Link
-          href="/signup?plan=kit"
+          href="/checkout/start?plan=kit"
           className="mt-8 inline-flex h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-accent-fg"
         >
           Start migration — $49

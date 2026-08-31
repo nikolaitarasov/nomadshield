@@ -30,7 +30,7 @@ const TIERS = [
       "BYO mailbox connect (preview) or manual address",
       "No scan overages — we don’t host your mail",
     ],
-    cta: { href: "/signup?plan=kit", label: "Start migration — $49" },
+    cta: { href: "/checkout/start?plan=kit", label: "Start migration — $49" },
     featured: true,
   },
   {
@@ -44,15 +44,25 @@ const TIERS = [
       "1-click audit defense PDF",
       "In-app reminders (email job is a stub)",
     ],
-    cta: { href: "/signup?plan=shield", label: "Add Audit Shield" },
+    cta: { href: "/checkout/start?plan=shield", label: "Add Audit Shield" },
     featured: false,
   },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ canceled?: string }>;
+}) {
+  const { canceled } = await searchParams;
   return (
     <MarketingShell>
       <div className="mx-auto max-w-6xl px-4 py-16">
+        {canceled && (
+          <p className="mb-6 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning">
+            Checkout was canceled. No charge was made.
+          </p>
+        )}
         <p className="text-[11px] font-medium uppercase tracking-wider text-accent">Pricing</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight">Three numbers. No warehouse fees.</h1>
         <p className="mt-3 max-w-2xl text-muted">

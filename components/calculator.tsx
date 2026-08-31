@@ -39,12 +39,6 @@ export function Calculator({ compact }: { compact?: boolean }) {
     });
   };
 
-  const qs = new URLSearchParams({
-    plan: "kit",
-    from: inputs.fromState,
-    to: inputs.targetState,
-  });
-
   const riskTone = out.riskLevel === "High" ? "danger" : out.riskLevel === "Medium" ? "warning" : "accent";
 
   return (
@@ -250,7 +244,7 @@ export function Calculator({ compact }: { compact?: boolean }) {
 
         <div className="mt-5 flex flex-col gap-2">
           <Link
-            href={`/signup?${qs.toString()}`}
+            href="/checkout/start?plan=kit"
             className="inline-flex h-11 items-center justify-center rounded-lg bg-accent text-sm font-medium text-accent-fg hover:bg-accent-hover"
           >
             Start migration — $49

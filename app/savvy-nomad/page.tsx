@@ -114,7 +114,7 @@ export default function SavvyNomadPage() {
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/signup?plan=kit"
+            href="/checkout/start?plan=kit"
             className="inline-flex h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-accent-fg"
           >
             Start migration — $49
@@ -250,7 +250,7 @@ export default function SavvyNomadPage() {
             facts-and-circumstances. A checklist does not guarantee a state will accept the change.
           </p>
           <Link
-            href="/signup?plan=kit"
+            href="/checkout/start?plan=kit"
             className="mt-5 inline-flex h-11 items-center rounded-lg bg-accent px-4 text-sm font-medium text-accent-fg"
           >
             Start migration — $49

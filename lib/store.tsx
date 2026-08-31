@@ -33,6 +33,7 @@ import type {
 } from "./types";
 import { uid } from "./utils";
 import { letterBody } from "./letters";
+import { loadEntitlement } from "./billing";
 
 function defaultDB(): AppDB {
   return emptyDB();
@@ -238,7 +239,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             next = initMigration(userId, next.profiles[userId].targetState, next);
           }
         }
-        return { ...next, session: { userId, email } };
+        return applyEntitlement({ ...next, session: { userId, email } }, userId);
       });
       return { ok: true };
     }
@@ -248,7 +249,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setSessionCookie(DEMO_USER_ID);
       patch((d) => {
         const seeded = d.profiles[DEMO_USER_ID] ? d : seedDemoUser(d);
-        return { ...seeded, session: { userId: DEMO_USER_ID, email: DEMO_EMAIL } };
+        return applyEntitlement(
+          { ...seeded, session: { userId: DEMO_USER_ID, email: DEMO_EMAIL } },
+          DEMO_USER_ID,
+        );
       });
       return { ok: true };
     }
@@ -258,7 +262,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const [userId] = match;
     if (memory.passwordByUser[userId] !== password) return { ok: false, error: "Wrong password." };
     setSessionCookie(userId);
-    patch((d) => ({ ...d, session: { userId, email: match[1].email } }));
+    patch((d) => applyEntitlement({ ...d, session: { userId, email: match[1].email } }, userId));
     return { ok: true };
   }, []);
 
@@ -281,6 +285,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           profiles: { ...d.profiles, [userId]: profile },
         };
         next = initMigration(userId, profile.targetState, next);
+        next = applyEntitlement(next, userId);
         cloudUpsertProfile(next.profiles[userId]);
         return next;
       });
@@ -301,6 +306,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         profiles: { ...d.profiles, [userId]: profile },
       };
       next = initMigration(userId, profile.targetState, next);
+      next = applyEntitlement(next, userId);
       return next;
     });
     return { ok: true, userId };
@@ -661,6 +667,20 @@ export function hasKit(plan: Plan | undefined) {
 
 export function hasShield(plan: Plan | undefined) {
   return plan === "shield";
+}
+
+function applyEntitlement(db: AppDB, userId: string): AppDB {
+  const e = loadEntitlement();
+  if (!e) return db;
+  const current = db.profiles[userId];
+  if (!current) return db;
+  return {
+    ...db,
+    profiles: {
+      ...db.profiles,
+      [userId]: { ...current, plan: e.plan, billingInterval: e.interval },
+    },
+  };
 }
 
 function blankProfile(id: string, email: string): Profile {

@@ -1,7 +1,9 @@
 "use client";
 
+import { OwnerLine } from "@/components/owner-line";
 import { Badge, Button, Modal } from "@/components/ui";
 import { DISCLAIMER_SHORT, DISCLAIMER_VERSION } from "@/lib/constants";
+import { startCheckout } from "@/lib/pay-client";
 import { hasKit, hasShield, useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import {
@@ -144,7 +146,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         )}
         <div className="px-4 py-6 sm:px-6 lg:px-8">{children}</div>
-        <p className="px-4 pb-8 text-[11px] leading-relaxed text-muted sm:px-6 lg:px-8">{DISCLAIMER_SHORT}</p>
+        <p className="px-4 pb-2 text-[11px] leading-relaxed text-muted sm:px-6 lg:px-8">{DISCLAIMER_SHORT}</p>
+        <div className="px-4 pb-8 sm:px-6 lg:px-8">
+          <OwnerLine />
+        </div>
       </div>
     </div>
   );
@@ -157,7 +162,7 @@ export function PlanGate({
   need: "kit" | "shield";
   children: ReactNode;
 }) {
-  const { profile, setPlan } = useApp();
+  const { profile } = useApp();
   const ok = need === "kit" ? hasKit(profile?.plan) : hasShield(profile?.plan);
   const [open, setOpen] = useState(false);
   if (ok) return <>{children}</>;
@@ -175,7 +180,7 @@ export function PlanGate({
               : "Unlock the 183-day calendar, 5 GB vault, defense PDF, and reminders."}
           </p>
           <Button className="mt-4" onClick={() => setOpen(true)}>
-            Continue (demo checkout)
+            Pay with Stripe
           </Button>
         </div>
       </div>
@@ -183,10 +188,6 @@ export function PlanGate({
         open={open}
         onClose={() => setOpen(false)}
         plan={need === "kit" ? "kit" : "shield"}
-        onConfirm={(interval) => {
-          setPlan(need === "kit" ? "kit" : "shield", interval);
-          setOpen(false);
-        }}
       />
     </div>
   );
@@ -196,18 +197,20 @@ export function CheckoutModal({
   open,
   onClose,
   plan,
-  onConfirm,
 }: {
   open: boolean;
   onClose: () => void;
   plan: "kit" | "shield";
-  onConfirm: (interval: "month" | "year") => void;
+  onConfirm?: (interval: "month" | "year") => void;
 }) {
+  const { session, profile } = useApp();
   const [interval, setInterval] = useState<"month" | "year">("month");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   return (
-    <Modal open={open} onClose={onClose} title="Demo checkout — no charge">
+    <Modal open={open} onClose={onClose} title="Pay with Stripe">
       <p className="text-sm text-muted">
-        Stripe is not live in this MVP. Confirming will flip your plan flag so you can click through the product.
+        You’ll complete payment on Stripe’s hosted checkout. Card details never touch NomadShield.
       </p>
       {plan === "shield" && (
         <div className="mt-3 grid grid-cols-2 gap-2">
@@ -231,8 +234,27 @@ export function CheckoutModal({
           </button>
         </div>
       )}
-      <Button className="mt-4 w-full" onClick={() => onConfirm(interval)}>
-        Activate {plan === "kit" ? "Migration Kit — $49" : "Audit Shield"}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
+      <Button
+        className="mt-4 w-full"
+        loading={loading}
+        onClick={async () => {
+          setLoading(true);
+          setError("");
+          try {
+            await startCheckout({
+              plan,
+              interval,
+              email: session?.email || profile?.email,
+              userId: session?.userId || profile?.id,
+            });
+          } catch (err) {
+            setError((err as Error).message);
+            setLoading(false);
+          }
+        }}
+      >
+        {plan === "kit" ? "Pay $49 — Migration Kit" : interval === "year" ? "Pay $190/yr — Audit Shield" : "Pay $19/mo — Audit Shield"}
       </Button>
     </Modal>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/marketing";
+import { OwnerLine } from "@/components/owner-line";
 import { Button, Field, Input } from "@/components/ui";
 import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/constants";
 import { useApp } from "@/lib/store";
@@ -90,10 +91,11 @@ function LoginForm() {
         </form>
         <p className="mt-6 text-sm text-muted">
           No account?{" "}
-          <Link href="/signup" className="text-accent hover:underline">
+          <Link href="/checkout/start?plan=kit" className="text-accent hover:underline">
             Start migration — $49
           </Link>
         </p>
+        <OwnerLine className="mt-8" />
       </div>
     </div>
   );

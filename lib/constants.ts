@@ -1,6 +1,12 @@
 export const APP_NAME = "NomadShield";
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
+export const OWNER = {
+  legalName: "SwiftAppLab LLC",
+  url: "https://swiftapplab.com",
+  host: "swiftapplab.com",
+};
+
 export const DISCLAIMER_VERSION = "2026-03-01";
 
 export const DISCLAIMER_SHORT =

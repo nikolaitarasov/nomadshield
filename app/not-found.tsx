@@ -1,4 +1,5 @@
 import { Logo } from "@/components/marketing";
+import { OwnerLine } from "@/components/owner-line";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -10,6 +11,7 @@ export default function NotFound() {
       <Link href="/" className="text-sm text-accent hover:underline">
         Back to NomadShield
       </Link>
+      <OwnerLine className="mt-8 text-center" />
     </div>
   );
 }

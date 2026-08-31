@@ -1,6 +1,7 @@
 "use client";
 
-import { DISCLAIMER_SHORT } from "@/lib/constants";
+import { OwnerLine } from "@/components/owner-line";
+import { DISCLAIMER_SHORT, OWNER } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Menu, ShieldCheck, X } from "lucide-react";
 import Link from "next/link";
@@ -43,7 +44,7 @@ export function MarketingHeader() {
             Log in
           </Link>
           <Link
-            href="/signup?plan=kit"
+            href="/checkout/start?plan=kit"
             className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-fg hover:bg-accent-hover"
           >
             Start migration — $49
@@ -63,7 +64,7 @@ export function MarketingHeader() {
           <Link href="/login" className="block py-2 text-sm" onClick={() => setOpen(false)}>
             Log in
           </Link>
-          <Link href="/signup?plan=kit" className="mt-2 block rounded-lg bg-accent py-2 text-center text-sm font-medium text-accent-fg">
+          <Link href="/checkout/start?plan=kit" className="mt-2 block rounded-lg bg-accent py-2 text-center text-sm font-medium text-accent-fg">
             Start migration — $49
           </Link>
         </div>
@@ -124,8 +125,18 @@ export function MarketingFooter() {
               </ul>
             </div>
             <div>
-              <p className="mb-2 font-medium">Account</p>
+              <p className="mb-2 font-medium">Company</p>
               <ul className="space-y-1.5 text-muted">
+                <li>
+                  <a href={OWNER.url} target="_blank" rel="noreferrer" className="hover:text-foreground">
+                    {OWNER.legalName}
+                  </a>
+                </li>
+                <li>
+                  <a href={OWNER.url} target="_blank" rel="noreferrer" className="hover:text-foreground">
+                    {OWNER.host}
+                  </a>
+                </li>
                 <li>
                   <Link href="/login" className="hover:text-foreground">
                     Log in
@@ -136,17 +147,12 @@ export function MarketingFooter() {
                     Sign up
                   </Link>
                 </li>
-                <li>
-                  <Link href="/app" className="hover:text-foreground">
-                    Dashboard
-                  </Link>
-                </li>
               </ul>
             </div>
           </div>
         </div>
         <p className="mt-8 border-t border-border pt-6 text-[11px] leading-relaxed text-muted">{DISCLAIMER_SHORT}</p>
-        <p className="mt-3 text-[11px] text-muted/80">© {new Date().getFullYear()} NomadShield. Software, not a law firm.</p>
+        <OwnerLine className="mt-3" />
       </div>
     </footer>
   );

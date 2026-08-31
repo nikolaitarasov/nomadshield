@@ -52,16 +52,18 @@ This is a **Node web service**, not a static site (middleware, auth, and API rou
 | Start command | `npm start` |
 | Node version | `22` (see `.node-version`) |
 
-4. Environment variables (optional — the app runs in demo mode without them):
+4. Environment variables:
 
 ```
 NEXT_PUBLIC_APP_URL=https://<your-service>.onrender.com
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
-Set `NEXT_PUBLIC_APP_URL` to the Render URL after the first deploy.
+Set `NEXT_PUBLIC_APP_URL` to the Render URL. Stripe Checkout Sessions work with **only** `STRIPE_SECRET_KEY` (products are created inline at $49 / $19/mo / $190/yr). Optional: Dashboard Payment Links (`NEXT_PUBLIC_STRIPE_LINK_*`) or existing Price IDs.
+
+Webhook endpoint: `https://<your-service>.onrender.com/api/stripe/webhook`  
+Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`.
 
 ## Quick start
 
@@ -105,7 +107,7 @@ Leave the Supabase keys empty for demo mode. When they are set:
 3. Email/password and magic links go through Supabase Auth.
 4. Vault uploads try Storage first, then fall back to IndexedDB.
 
-## Pricing (mocked)
+## Pricing
 
 | Plan | Price | Includes |
 |---|---|---|
@@ -114,7 +116,9 @@ Leave the Supabase keys empty for demo mode. When they are set:
 | Audit Shield | **$19/mo or $190/yr** | Day logger, 5 GB vault, defense PDF, reminders |
 | Concierge | Waitlist | “Book a CPA partner” — no fake live chat |
 
-Stripe is not connected. Checkout toggles a plan flag so you can click through the product.
+Buy buttons send customers to **Stripe Checkout** (or a Dashboard Payment Link if you set those env vars). After payment they return to `/checkout/success`, which verifies the session and unlocks the plan.
+
+NomadShield is owned by [SwiftAppLab LLC](https://swiftapplab.com).
 
 ## App routes
 
@@ -134,7 +138,7 @@ Next.js 15 App Router · TypeScript · Tailwind CSS v4 · Geist · Lucide · Sup
 
 | Integration | What you see |
 |---|---|
-| Stripe | “Demo checkout — no charge” modal |
+| Stripe | Live Checkout Sessions when `STRIPE_SECRET_KEY` is set; Payment Links if `NEXT_PUBLIC_STRIPE_LINK_*` are set |
 | Mailbox OAuth | Provider picker + address fields labeled **Connect (preview)** |
 | Inbound mail | Webhook URL + “waiting for first webhook” + simulate button |
 | Magic link (no Supabase) | On-page continue button |

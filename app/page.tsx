@@ -169,7 +169,7 @@ export default function HomePage() {
                 <li>BYO mailbox connect (preview)</li>
               </ul>
               <Link
-                href="/signup?plan=kit"
+                href="/checkout/start?plan=kit"
                 className="mt-5 inline-flex h-10 w-full items-center justify-center rounded-lg bg-accent text-sm font-medium text-accent-fg"
               >
                 Start migration — $49
@@ -190,7 +190,7 @@ export default function HomePage() {
           </div>
           <p className="mt-6 text-sm text-muted">
             Concierge is waitlist only. If you want a human,{" "}
-            <Link href="/signup?plan=kit" className="text-accent hover:underline">
+            <Link href="/signup?waitlist=1" className="text-accent hover:underline">
               book a CPA partner
             </Link>{" "}
             — we will not fake a live CPA chat.

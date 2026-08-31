@@ -14,7 +14,6 @@ export default function SettingsPage() {
   const {
     profile,
     updateProfile,
-    setPlan,
     switchTargetState,
     exportJson,
     deleteAccount,
@@ -46,16 +45,13 @@ export default function SettingsPage() {
             {profile.plan === "shield" ? ` · ${profile.billingInterval}` : ""}
           </Badge>
         </div>
-        <p className="mt-2 text-sm text-muted">Stripe is mocked. Toggling a plan only flips a flag.</p>
+        <p className="mt-2 text-sm text-muted">Upgrades are billed on Stripe’s hosted checkout.</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Button size="sm" variant="outline" onClick={() => setCheckout("kit")}>
-            Migration Kit $49
+            Buy Migration Kit $49
           </Button>
           <Button size="sm" variant="outline" onClick={() => setCheckout("shield")}>
-            Audit Shield $19/mo
-          </Button>
-          <Button size="sm" variant="ghost" onClick={() => setPlan("free")}>
-            Reset to free
+            Subscribe Audit Shield
           </Button>
         </div>
         <div className="mt-4 border-t border-border pt-4">
@@ -214,10 +210,6 @@ export default function SettingsPage() {
         open={checkout === "kit" || checkout === "shield"}
         onClose={() => setCheckout(null)}
         plan={checkout === "shield" ? "shield" : "kit"}
-        onConfirm={(interval) => {
-          if (checkout === "kit" || checkout === "shield") setPlan(checkout, interval);
-          setCheckout(null);
-        }}
       />
     </div>
   );
