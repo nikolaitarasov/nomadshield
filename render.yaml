@@ -1,0 +1,23 @@
+# Render Blueprint — or connect this repo as a Node Web Service in the dashboard.
+# Use a Web Service (not a Static Site): this app has middleware, auth, and API routes.
+services:
+  - type: web
+    name: nomadshield
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD
+        value: "1"
