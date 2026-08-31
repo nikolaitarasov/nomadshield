@@ -1,8 +1,21 @@
-import { siteUrl } from "@/lib/seo";
+import { publicSiteUrl } from "@/lib/seo";
 import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
 
-export default function robots(): MetadataRoute.Robots {
-  const base = siteUrl();
+export const dynamic = "force-dynamic";
+
+async function origin() {
+  const fromEnv = publicSiteUrl();
+  if (fromEnv) return fromEnv;
+  const h = await headers();
+  const host = (h.get("x-forwarded-host") || h.get("host") || "").split(",")[0].trim();
+  const proto = h.get("x-forwarded-proto") || "https";
+  if (host && !/localhost|127\.0\.0\.1/i.test(host)) return `${proto}://${host}`.replace(/\/$/, "");
+  return null;
+}
+
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const base = await origin();
   return {
     rules: [
       {
@@ -11,6 +24,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/app/", "/api/", "/auth/", "/checkout/"],
       },
     ],
-    sitemap: `${base}/sitemap.xml`,
+    sitemap: base ? `${base}/sitemap.xml` : undefined,
   };
 }
