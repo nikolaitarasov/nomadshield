@@ -249,14 +249,14 @@ export function Calculator({ compact }: { compact?: boolean }) {
           >
             Start migration — $49
           </Link>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <Button variant="outline" onClick={() => setBlueprintOpen(true)}>
-              <Mail className="size-4" />
+          <div className="flex flex-col gap-2">
+            <Button variant="outline" className="w-full" onClick={() => setBlueprintOpen(true)}>
+              <Mail className="size-4 shrink-0" />
               Save this blueprint
             </Button>
             <Link
               href={`/signup?plan=kit&mailbox=1`}
-              className="inline-flex h-10 items-center justify-center rounded-lg border border-border text-sm hover:bg-muted-bg"
+              className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-border px-3 text-sm hover:bg-muted-bg"
             >
               I already have a mailbox — connect it
             </Link>
