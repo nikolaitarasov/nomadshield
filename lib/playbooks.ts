@@ -43,6 +43,22 @@ export type Playbook = {
   steps: PlaybookStepDef[];
 };
 
+export const PUBLIC_PLAYBOOKS: {
+  slug: string;
+  state: TargetState;
+  label: string;
+}[] = [
+  { slug: "florida", state: "FL", label: "Florida (primary)" },
+  { slug: "texas", state: "TX", label: "Texas (secondary)" },
+  { slug: "south-dakota", state: "SD", label: "South Dakota (2026 warnings)" },
+];
+
+export function playbookBySlug(slug: string) {
+  const meta = PUBLIC_PLAYBOOKS.find((p) => p.slug === slug);
+  if (!meta) return null;
+  return { ...meta, playbook: getPlaybook(meta.state) };
+}
+
 export const STEP_META: { key: StepKey; number: number; title: string }[] = [
   { key: "address", number: 1, title: "Address & mail" },
   { key: "presence", number: 2, title: "Physical presence" },

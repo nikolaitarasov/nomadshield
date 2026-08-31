@@ -128,11 +128,27 @@ export function MarketingFooter() {
               </ul>
             </div>
             <div>
-              <p className="mb-2 font-medium">Playbooks</p>
+              <p className="mb-2 font-medium">
+                <Link href="/playbooks" className="hover:text-foreground">
+                  Playbooks
+                </Link>
+              </p>
               <ul className="space-y-1.5 text-muted">
-                <li>Florida (primary)</li>
-                <li>Texas (secondary)</li>
-                <li>South Dakota (2026 warnings)</li>
+                <li>
+                  <Link href="/playbooks/florida" className="hover:text-foreground">
+                    Florida (primary)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/playbooks/texas" className="hover:text-foreground">
+                    Texas (secondary)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/playbooks/south-dakota" className="hover:text-foreground">
+                    South Dakota (2026 warnings)
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
