@@ -117,7 +117,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               Start migration — $49 →
             </Link>
             <Link href="/savvy-nomad" className="text-sm text-accent hover:underline">
-              SavvyNomad alternative →
+              How we differ from a mailbox concierge →
             </Link>
           </div>
         </div>

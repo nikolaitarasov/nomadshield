@@ -65,11 +65,11 @@ function addressStep(state: TargetState): PlaybookStepDef {
     key: "address",
     number: 1,
     title: "Address & mail",
-    summary: `Lock a ${name} address you actually control. Bring your own mailbox — we do not force you into a warehouse.`,
+    summary: `Lock a ${name} address you actually control. Bring your own mailbox if you already have one.`,
     warnings:
       state === "SD"
         ? [
-            "SavvyNomad discontinued South Dakota after legislative, payroll, and DMV friction. A Pierre or Sioux Falls PMB is not a magic shield.",
+            "Payroll, banking, and DMV practice around virtual South Dakota addresses has tightened in 2026. A PMB alone is not an audit file.",
           ]
         : undefined,
     items: [
@@ -556,7 +556,7 @@ function declarationStep(state: TargetState): PlaybookStepDef {
 const TAGLINE: Record<TargetState, string> = {
   FL: "Florida is the primary playbook: Declaration of Domicile, FLHSMV, and a mailbox you already own.",
   TX: "Texas is the secondary playbook: DPS, voter registration, and a residency file — no statewide declaration form.",
-  SD: "South Dakota is no longer the lazy default. Use this playbook only after you read the 2026 warnings.",
+  SD: "Use this playbook only after you read the 2026 warnings. Florida is usually the more practical default for W-2 employees.",
 };
 
 const WARNINGS: Record<TargetState, string[]> = {
@@ -569,7 +569,7 @@ const WARNINGS: Record<TargetState, string[]> = {
     "Escapees / Livingston is widely used by full-time travelers. It is not a substitute for presence and a DL.",
   ],
   SD: [
-    "SavvyNomad discontinued SD services after legislative / payroll / DMV friction. We will not pretend that went away.",
+    "Several Florida concierge services no longer offer South Dakota after payroll, banking, and DMV friction.",
     "W-2 employees: Florida is usually safer for payroll and banking acceptance.",
     "A one-night hotel stay is not audit-proof.",
   ],

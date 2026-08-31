@@ -7,7 +7,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "FAQ — domicile, 183 days, SavvyNomad, W-2 payroll",
   description:
-    "Is NomadShield legal? Do you need to visit Florida? What is 183 days? How does this differ from SavvyNomad? W-2 payroll, FEIE, and mailbox FAQs for US digital nomads.",
+    "Is NomadShield legal? Do you need to visit Florida? What is 183 days? How does it relate to a mailbox concierge? W-2 payroll, FEIE, and mailbox FAQs for US digital nomads.",
   alternates: { canonical: "/faq" },
 };
 
@@ -38,15 +38,15 @@ const FAQS = [
   },
   {
     q: "Can I keep my current virtual mailbox?",
-    a: "Yes. That is the point. Connect (preview) or paste the CMRA address exactly as printed — PMB vs suite matters for banks. We do not run a proprietary warehouse in this MVP.",
+    a: "Yes. That is the point. Connect (preview) or paste the CMRA address exactly as printed — PMB vs suite matters for banks. NomadShield does not operate a mail facility.",
   },
   {
-    q: "Is NomadShield the same as SavvyNomad?",
-    a: "No. SavvyNomad is a Florida mailbox-plus-concierge (proprietary warehouse, ~$55–$265/mo plus extras). NomadShield is software: a 6-step playbook, generated packets, and a 183-day audit vault. Keep the mailbox you already have. Full write-up: SavvyNomad alternative.",
+    q: "How is NomadShield different from a mailbox concierge like SavvyNomad?",
+    a: "SavvyNomad is a Florida mailbox and concierge — a strong fit if you want one team for address, paper, and walkthroughs. NomadShield is software: a 6-step playbook, generated packets, and a 183-day audit vault. If you already have a virtual mailbox, you can keep it. Read the comparison page for the split.",
   },
   {
     q: "Why isn’t South Dakota the default?",
-    a: "Because it isn’t easy anymore. Legislative, payroll-provider, banking, and DMV friction is why SavvyNomad discontinued SD. We still ship an SD playbook — with warnings, not a wink.",
+    a: "Payroll, banking, and DMV practice around virtual South Dakota addresses has tightened. Several Florida concierge services no longer offer SD. We still ship an SD playbook, with 2026 risk callouts. Florida is the usual recommendation for W-2 employees.",
   },
   {
     q: "Do I need a CPA?",
@@ -80,11 +80,11 @@ export default function FaqPage() {
           ))}
         </div>
         <p className="mt-8 text-sm text-muted">
-          Comparing mailbox concierges? Read the{" "}
+          Comparing a mailbox concierge with software?{" "}
           <Link href="/savvy-nomad" className="text-accent hover:underline">
-            SavvyNomad alternative
-          </Link>{" "}
-          page.
+            NomadShield and SavvyNomad
+          </Link>
+          .
         </p>
         <DisclaimerNote className="mt-10" />
       </div>

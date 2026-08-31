@@ -6,7 +6,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "SavvyNomad vs NomadShield vs Escapees",
   description:
-    "Honest comparison: SavvyNomad (Florida mailbox concierge), NomadShield (software playbook + audit vault), Escapees, and DIY. Pricing, mail, South Dakota, and what happens after you move.",
+    "How NomadShield compares with SavvyNomad, Escapees, and DIY: mailbox vs software playbook, Florida / Texas / South Dakota, and what you keep after you move.",
   keywords: ["SavvyNomad vs NomadShield", "Savvy Nomad comparison", "Escapees vs SavvyNomad", "Florida domicile comparison"],
   alternates: { canonical: "/compare" },
 };
@@ -21,21 +21,21 @@ const ROWS: [string, string, string, string, string][] = [
   ],
   [
     "States",
-    "Florida-first (SD discontinued after legislative / payroll / DMV friction)",
+    "Florida-first (South Dakota no longer offered)",
     "FL primary, TX secondary, SD with explicit 2026 risk warnings",
     "Historically strong on TX (Escapees) and previously SD",
-    "Whatever you pick — including the wrong one",
+    "You choose the state and assemble every form yourself",
   ],
   [
     "Mail",
-    "Proprietary warehouse. Basic plan is often essential mail only; scans extra",
+    "Mail forwarding included with the subscription",
     "Bring-your-own: Anytime Mailbox, PostScan, iPostal1, Traveling Mailbox, Escapees, US Global Mail, or manual",
     "Their mail service is the product",
     "You already pay $10–20/mo somewhere else",
   ],
   [
     "Pricing",
-    "$55–$90/mo basic/mid, ~$265/mo premium, plus notary / vehicle / renewal / scan extras",
+    "Monthly subscription for mail + concierge (plans vary)",
     "Free calculator · $49 Migration Kit · $19/mo or $190/yr Audit Shield",
     "Membership + mail fees (varies by plan) — not a domicile SaaS",
     "$0 software, high time cost, easy to miss a tie",
@@ -48,8 +48,8 @@ const ROWS: [string, string, string, string, string][] = [
     "Hope the folder is complete when a notice arrives",
   ],
   [
-    "Speed",
-    "Signup + notary + wait on humans",
+    "How you work",
+    "Concierge-led: signup, notary, mail, and guidance",
     "Instant checklist + generated letters the same session",
     "Depends on mail setup and travel",
     "As fast as you are organized",
@@ -62,11 +62,12 @@ export default function ComparePage() {
       <div className="mx-auto max-w-6xl px-4 py-16">
         <p className="text-[11px] font-medium uppercase tracking-wider text-accent">Compare</p>
         <h1 className="mt-2 max-w-3xl text-4xl font-semibold tracking-tight">
-          We are not “SavvyNomad cheaper.” We are software they didn’t productize.
+          Mailbox concierge, traveler mail, DIY — or software.
         </h1>
         <p className="mt-3 max-w-2xl text-muted">
-          SavvyNomad is a good Florida mailbox-plus-concierge. Escapees is a real traveler institution. DIY works if you
-          already know the county clerk’s PDF name. NomadShield is the playbook + the year-after file.
+          SavvyNomad is a solid Florida mailbox and concierge. Escapees is a trusted traveler mail service. DIY works if
+          you already know the county clerk’s forms. NomadShield is the self-serve playbook and the year-after audit
+          file, designed to sit on top of a mailbox you already have.
         </p>
 
         <div className="mt-10 space-y-4 md:hidden">
@@ -127,8 +128,7 @@ export default function ComparePage() {
             <h2 className="font-semibold">When NomadShield is the better fit</h2>
             <p className="mt-2 text-sm text-muted">
               You already pay for Anytime Mailbox / PostScan / iPostal1 / Traveling Mailbox / Escapees / US Global Mail.
-              You want the savings number, a state-specific packet tonight, and an audit file next April — not another
-              warehouse subscription.
+              You want a savings estimate, a state-specific packet in one sitting, and a 183-day log next April.
             </p>
           </div>
         </div>

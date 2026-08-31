@@ -46,7 +46,7 @@ export default function HomePage() {
         <div className="relative mx-auto grid max-w-6xl items-start gap-8 px-4 pb-16 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pt-16">
           <div className="order-2 animate-fade-up lg:order-1">
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">
-              SavvyNomad alternative · US nomads leaving CA, NY, NJ, IL, MN, MA
+              For US nomads leaving CA, NY, NJ, IL, MN, MA
             </p>
             <h1 className="mt-3 max-w-xl text-4xl font-semibold tracking-tight sm:text-5xl">
               Leave the high-tax state.
@@ -54,12 +54,12 @@ export default function HomePage() {
             </h1>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
               NomadShield is domicile software: a self-serve playbook, generated packets, and a 183-day audit vault.
-              You already pay $10–20/mo for a mailbox. Don’t pay another $90 to rent theirs.
+              You already pay $10–20/mo for a mailbox. Keep it — we organize the domicile file around it.
             </p>
             <ul className="mt-6 space-y-2 text-sm text-muted">
-              <li>— Transparent flat pricing. No scan overages, notary surprises, or “essential mail only.”</li>
-              <li>— Humans are optional. Checklists and letters generate in the same session.</li>
-              <li>— Florida primary, Texas secondary, South Dakota with the warnings SavvyNomad learned the hard way.</li>
+              <li>— Published software pricing: free calculator, $49 kit, $19/mo Shield.</li>
+              <li>— Humans optional. Checklists and letters generate in the same session.</li>
+              <li>— Florida primary, Texas secondary, South Dakota documented with 2026 context.</li>
             </ul>
             <div className="mt-8 hidden gap-3 lg:flex">
               <a
@@ -72,7 +72,7 @@ export default function HomePage() {
                 href="/compare"
                 className="inline-flex h-11 items-center rounded-lg border border-border px-4 text-sm hover:bg-muted-bg"
               >
-                vs SavvyNomad
+                Compare options
               </Link>
             </div>
           </div>
@@ -130,12 +130,11 @@ export default function HomePage() {
       <section className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-16 lg:grid-cols-2">
         <ShieldDemo />
         <div>
-          <p className="text-[11px] font-medium uppercase tracking-wider text-accent">The wedge</p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight">Post-move protection is the product.</h2>
+          <p className="text-[11px] font-medium uppercase tracking-wider text-accent">After the move</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight">The year-after file is the product.</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            Bundled mailbox services will help you get a Florida address. They barely productize the year after: the
-            nights, the receipts, the exhibit list you wish you had when a notice shows up. Audit Shield is that file —
-            $19/mo, or $190/yr.
+            A Florida address gets you started. Audit Shield is the year that follows: nights, receipts, and an exhibit
+            list you can hand a CPA if a notice shows up — $19/mo, or $190/yr.
           </p>
           <ul className="mt-4 space-y-2 text-sm text-muted">
             <li>— Three buckets: target state, former high-tax state(s), everywhere else.</li>
@@ -201,16 +200,19 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="text-3xl font-semibold">Honest comparison</h2>
-        <p className="mt-2 text-sm text-muted">Not a smear. Different product. Full table on the compare page.</p>
+        <h2 className="text-3xl font-semibold">How we sit next to a mailbox concierge</h2>
+        <p className="mt-2 text-sm text-muted">
+          SavvyNomad runs mail and people. NomadShield runs the playbook and the year-after log. Full table on the
+          compare page.
+        </p>
         <div className="mt-6 space-y-3 md:hidden">
           {[
             ["Model", "Bundled FL address + mail + concierge", "Software playbook + audit vault; mail optional"],
             ["States", "Florida-first (SD discontinued)", "FL / TX / SD playbooks"],
-            ["Mail", "Proprietary warehouse; basic plan = essential mail only", "BYO mailbox via connect or manual address"],
-            ["Pricing", "$55–$265/mo + extras (notary, vehicle, scans)", "Flat: Free calculator / $49 kit / $19/mo Shield"],
-            ["After move", "Compliance alerts + limited CPA minutes", "183-day calendar, evidence vault, defense PDF"],
-            ["Speed", "Signup + notary + wait on humans", "Instant checklist + generated letters the same session"],
+            ["Mail", "Forwarding included with the subscription", "Bring-your-own mailbox, or enter an address"],
+            ["Pricing", "Monthly subscription for mail + concierge", "Free calculator / $49 kit / $19/mo Shield"],
+            ["After move", "Mail continues + compliance alerts + CPA chat", "183-day calendar, evidence vault, defense PDF"],
+            ["How you work", "Concierge-led: notary, mail, guidance", "Same-session checklist and generated letters"],
           ].map((row) => (
             <div key={row[0]} className="surface p-4">
               <p className="text-xs font-medium text-muted">{row[0]}</p>
@@ -238,10 +240,10 @@ export default function HomePage() {
               {[
                 ["Model", "Bundled FL address + mail + concierge", "Software playbook + audit vault; mail optional"],
                 ["States", "Florida-first (SD discontinued)", "FL / TX / SD playbooks"],
-                ["Mail", "Proprietary warehouse; basic plan = essential mail only", "BYO mailbox via connect or manual address"],
-                ["Pricing", "$55–$265/mo + extras (notary, vehicle, scans)", "Flat: Free calculator / $49 kit / $19/mo Shield"],
-                ["After move", "Compliance alerts + limited CPA minutes", "183-day calendar, evidence vault, defense PDF"],
-                ["Speed", "Signup + notary + wait on humans", "Instant checklist + generated letters the same session"],
+                ["Mail", "Forwarding included with the subscription", "Bring-your-own mailbox, or enter an address"],
+                ["Pricing", "Monthly subscription for mail + concierge", "Free calculator / $49 kit / $19/mo Shield"],
+                ["After move", "Mail continues + compliance alerts + CPA chat", "183-day calendar, evidence vault, defense PDF"],
+                ["How you work", "Concierge-led: notary, mail, guidance", "Same-session checklist and generated letters"],
               ].map((row) => (
                 <tr key={row[0]} className="bg-card/40">
                   <td className="px-4 py-3 font-medium">{row[0]}</td>
@@ -259,15 +261,15 @@ export default function HomePage() {
 
       <section className="mx-auto max-w-6xl px-4 pb-16">
         <div className="surface p-6 sm:p-8">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-accent">Searched Savvy Nomad?</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">We are the SavvyNomad alternative — not a cheaper warehouse.</h2>
+          <p className="text-[11px] font-medium uppercase tracking-wider text-accent">Already looking at SavvyNomad?</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight">Keep their mailbox — or yours. Add the playbook.</h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-            SavvyNomad is a Florida mailbox concierge. NomadShield is domicile software: keep Anytime Mailbox / PostScan /
-            iPostal1 / Traveling Mailbox / Escapees, run a 6-step playbook the same session, and keep a 183-day audit
-            file after you move. They discontinued South Dakota. We still tell you when Florida or Texas is safer.
+            SavvyNomad is a Florida mailbox and concierge. NomadShield is domicile software: a 6-step playbook, generated
+            packets, and a 183-day audit file that works with Anytime Mailbox, PostScan, iPostal1, Traveling Mailbox,
+            Escapees, or whatever CMRA you already pay for.
           </p>
           <Link href="/savvy-nomad" className="mt-5 inline-flex text-sm text-accent hover:underline">
-            SavvyNomad vs NomadShield — full write-up →
+            How the two products differ →
           </Link>
         </div>
       </section>

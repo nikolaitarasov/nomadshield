@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Pricing — $49 kit, $19/mo Shield (vs SavvyNomad $55–$265/mo)",
+  title: "Pricing — $49 kit, $19/mo Shield",
   description:
-    "NomadShield flat pricing vs SavvyNomad’s $55–$265/mo warehouse plans. Free calculator, $49 one-time Migration Kit, $19/mo Audit Shield. No scan overages — we don’t host your mail.",
+    "NomadShield software pricing: free calculator, $49 one-time Migration Kit, $19/mo or $190/yr Audit Shield. We don’t forward mail, so there is no postage line item.",
   alternates: { canonical: "/pricing" },
 };
 
@@ -28,7 +28,7 @@ const TIERS = [
       "Ready-to-sign packets + county clerk links",
       "Severing-ties letter generator",
       "BYO mailbox connect (preview) or manual address",
-      "No scan overages — we don’t host your mail",
+      "Mail stays with your existing provider",
     ],
     cta: { href: "/checkout/start?plan=kit", label: "Start migration — $49" },
     featured: true,
@@ -64,10 +64,10 @@ export default async function PricingPage({
           </p>
         )}
         <p className="text-[11px] font-medium uppercase tracking-wider text-accent">Pricing</p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Three numbers. No warehouse fees.</h1>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight">Three numbers. Software, not a mailbox bill.</h1>
         <p className="mt-3 max-w-2xl text-muted">
-          SavvyNomad runs $55–$265/mo plus notary, vehicle, renewal, and scan extras. NomadShield is software. Keep the
-          mailbox you already have.
+          A concierge mailbox is a monthly service because it handles paper. NomadShield is priced as software so you can
+          keep the mailbox you already have.
         </p>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {TIERS.map((t) => (

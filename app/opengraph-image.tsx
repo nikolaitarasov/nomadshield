@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "NomadShield — SavvyNomad alternative for US digital nomads";
+export const alt = "NomadShield — domicile playbooks and audit protection for US nomads";
 
 export default function OpenGraphImage() {
   return new ImageResponse(
@@ -40,7 +40,7 @@ export default function OpenGraphImage() {
             Keep the proof.
           </div>
           <div style={{ fontSize: 24, color: "#8b97a8", maxWidth: 820 }}>
-            SavvyNomad alternative — self-serve domicile playbooks and a 183-day audit vault. Keep your mailbox.
+            Self-serve domicile playbooks and a 183-day audit vault. Keep the mailbox you already have.
           </div>
         </div>
         <div style={{ display: "flex", gap: 28, color: "#34d399", fontSize: 20 }}>

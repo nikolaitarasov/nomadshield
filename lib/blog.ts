@@ -42,7 +42,7 @@ export const POSTS: BlogPost[] = [
       },
       {
         type: "p",
-        text: "You already pay $10–20/mo at Anytime Mailbox, PostScan Mail, iPostal1, Traveling Mailbox, Escapees, or US Global Mail. You do not have to rent a second warehouse. NomadShield is built around bring-your-own mail. Form 1583 (USPS CMRA authorization) still has to be notarized with your provider.",
+        text: "You already pay $10–20/mo at Anytime Mailbox, PostScan Mail, iPostal1, Traveling Mailbox, Escapees, or US Global Mail. NomadShield is built around bring-your-own mail, so you can keep that provider. Form 1583 (USPS CMRA authorization) still has to be notarized with them.",
       },
       { type: "h2", text: "2. Log physical presence — a Florida PMB is not a day count" },
       {
@@ -170,9 +170,9 @@ export const POSTS: BlogPost[] = [
   },
   {
     slug: "south-dakota-vs-florida-domicile-2026",
-    title: "South Dakota vs Florida domicile in 2026 (why SavvyNomad dropped SD)",
+    title: "South Dakota vs Florida domicile in 2026",
     description:
-      "South Dakota is no longer the lazy digital-nomad default. Payroll, banking, and DMV friction — and SavvyNomad discontinuing SD — are why Florida is NomadShield’s primary playbook.",
+      "Payroll, banking, and DMV practice around virtual South Dakota addresses has tightened. Why NomadShield treats Florida as the primary playbook, with Texas second and SD documented in the open.",
     date: "2026-08-31",
     tags: ["South Dakota", "Florida", "SavvyNomad", "2026"],
     body: [
@@ -182,7 +182,7 @@ export const POSTS: BlogPost[] = [
       },
       {
         type: "p",
-        text: "For a decade the pitch was: spend one night in a Sioux Falls hotel, open a virtual mailbox, and stop paying California. That folklore collided with legislation, DMV practice, banks, and payroll providers. SavvyNomad — a well-known Florida mailbox concierge — discontinued South Dakota services after that friction. If you are googling “SavvyNomad South Dakota” or “SD domicile 2026,” this is the honest version.",
+        text: "For years a common pitch was: spend one night in South Dakota, open a virtual mailbox, and stop paying California. Legislation, DMV practice, banks, and payroll providers have all gotten stricter about that pattern. Several Florida concierge services, including SavvyNomad, no longer offer South Dakota. If you are weighing SD vs Florida in 2026, this is the practical version.",
       },
       { type: "h2", text: "What broke with the South Dakota mailbox play" },
       {
@@ -201,7 +201,7 @@ export const POSTS: BlogPost[] = [
       { type: "h2", text: "Florida as the default playbook" },
       {
         type: "p",
-        text: "Florida also has no wage income tax. It has a Declaration of Domicile you file with a county clerk, a 30-day driver-license expectation, and broader banking acceptance of residential-style CMRAs. That is why NomadShield treats Florida as primary and why SavvyNomad is Florida-first. The difference: they rent you their warehouse. We let you keep Anytime Mailbox, PostScan, iPostal1, Traveling Mailbox, Escapees, or US Global Mail and we productize the year-after file.",
+        text: "Florida also has no wage income tax. It has a Declaration of Domicile you file with a county clerk, a 30-day driver-license expectation, and generally smoother banking with residential-style CMRAs. That is why NomadShield treats Florida as primary, and why Florida concierge services focus there too. NomadShield’s difference is software: keep Anytime Mailbox, PostScan, iPostal1, Traveling Mailbox, Escapees, or US Global Mail, and use the playbook plus a 183-day vault for the year after you move.",
       },
       { type: "h2", text: "When Texas is the better second choice" },
       {
@@ -221,7 +221,7 @@ export const POSTS: BlogPost[] = [
       },
       {
         type: "p",
-        text: "SavvyNomad vs NomadShield is not “who has the better South Dakota trick.” SD is no longer the trick. The product question is whether you want a bundled Florida mailbox or a self-serve playbook plus a 183-day vault on top of the mailbox you already pay for.",
+        text: "The useful question is not who has a clever South Dakota path. It is whether you want a bundled Florida mailbox and concierge, or a self-serve playbook and 183-day vault on top of a mailbox you already pay for. Both are legitimate. They solve different parts of the move.",
       },
     ],
   },

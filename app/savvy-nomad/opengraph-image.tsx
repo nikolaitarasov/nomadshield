@@ -22,15 +22,14 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ color: "#34d399", fontSize: 20, fontWeight: 600, letterSpacing: "0.12em" }}>
-          SAVVYNOMAD ALTERNATIVE
+          COMPARE
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ fontSize: 56, fontWeight: 650, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-            NomadShield vs Savvy Nomad
+          <div style={{ fontSize: 52, fontWeight: 650, letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+            NomadShield and SavvyNomad
           </div>
           <div style={{ fontSize: 24, color: "#8b97a8", maxWidth: 860 }}>
-            They bundle a Florida warehouse. We sell the playbook and the 183-day defense file. Keep the mailbox you
-            already pay for.
+            Concierge mailbox vs self-serve playbook and 183-day audit file. Keep the mailbox you already pay for.
           </div>
         </div>
         <div style={{ fontSize: 22, color: "#34d399" }}>$49 kit · $19/mo Audit Shield · FL / TX / SD</div>
