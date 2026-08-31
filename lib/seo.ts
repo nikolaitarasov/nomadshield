@@ -5,10 +5,9 @@ export function siteUrl() {
   return CANONICAL_ORIGIN;
 }
 
-export const DEFAULT_TITLE =
-  "NomadShield — domicile playbooks and audit protection for US nomads";
+export const DEFAULT_TITLE = "NomadShield — leave the high-tax state, keep the proof";
 export const DEFAULT_DESCRIPTION =
-  "Self-serve US tax-domicile playbooks and a 183-day audit vault for digital nomads leaving CA, NY, and other high-tax states. Keep the mailbox you already have. $49 Migration Kit + $19/mo Audit Shield. Florida, Texas, and South Dakota — not a CPA.";
+  "Self-serve domicile playbooks, generated packets, and a 183-day audit vault for US nomads leaving CA, NY, and other high-tax states. Florida, Texas, South Dakota. $49 kit + $19/mo Shield.";
 
 export const SAVVY_FAQS: { q: string; a: string }[] = [
   {

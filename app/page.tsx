@@ -3,12 +3,14 @@ import { JsonLd } from "@/components/json-ld";
 import { MarketingShell } from "@/components/marketing";
 import { Card } from "@/components/ui";
 import { POSTS } from "@/lib/blog";
-import { DEFAULT_DESCRIPTION, siteUrl } from "@/lib/seo";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, siteUrl } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
+  title: { absolute: DEFAULT_TITLE },
+  description: DEFAULT_DESCRIPTION,
   alternates: { canonical: "/" },
 };
 
@@ -25,21 +27,30 @@ export default function HomePage() {
   return (
     <MarketingShell>
       <JsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          name: "NomadShield",
-          url: siteUrl(),
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Web",
-          description: DEFAULT_DESCRIPTION,
-          offers: {
-            "@type": "AggregateOffer",
-            lowPrice: "0",
-            highPrice: "190",
-            priceCurrency: "USD",
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "NomadShield",
+            url: siteUrl(),
+            description: DEFAULT_DESCRIPTION,
           },
-        }}
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "NomadShield",
+            url: siteUrl(),
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            description: DEFAULT_DESCRIPTION,
+            offers: {
+              "@type": "AggregateOffer",
+              lowPrice: "0",
+              highPrice: "190",
+              priceCurrency: "USD",
+            },
+          },
+        ]}
       />
       <section className="relative overflow-hidden bg-glow">
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-70" />
@@ -53,12 +64,12 @@ export default function HomePage() {
               <span className="block text-accent">Keep the proof.</span>
             </h1>
             <p className="mt-4 max-w-lg text-base leading-relaxed text-muted">
-              NomadShield is domicile software: a self-serve playbook, generated packets, and a 183-day audit vault.
-              You already pay $10–20/mo for a mailbox. Keep it — we organize the domicile file around it.
+              Self-serve domicile playbooks, generated packets, and a 183-day audit vault for US nomads leaving CA, NY,
+              and other high-tax states. Florida, Texas, South Dakota. $49 kit + $19/mo Shield.
             </p>
             <ul className="mt-6 space-y-2 text-sm text-muted">
-              <li>— Published software pricing: free calculator, $49 kit, $19/mo Shield.</li>
-              <li>— Humans optional. Checklists and letters generate in the same session.</li>
+              <li>— Bring the mailbox you already have. We organize the domicile file around it.</li>
+              <li>— Checklists and letters generate in the same session. Humans optional.</li>
               <li>— Florida primary, Texas secondary, South Dakota documented with 2026 context.</li>
             </ul>
             <div className="mt-8 hidden gap-3 lg:flex">

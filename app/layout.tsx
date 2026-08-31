@@ -24,12 +24,11 @@ export const metadata: Metadata = {
   },
   description: DEFAULT_DESCRIPTION,
   keywords: [
-    "SavvyNomad alternative",
-    "Savvy Nomad alternative",
     "Florida domicile digital nomad",
-    "US tax domicile",
+    "US tax domicile playbook",
     "183 day log",
     "leave California taxes",
+    "digital nomad tax domicile",
     "NomadShield",
   ],
   openGraph: {
