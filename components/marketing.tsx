@@ -9,6 +9,7 @@ import { useState } from "react";
 const NAV = [
   { href: "/#how", label: "How it works" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/savvy-nomad", label: "vs SavvyNomad" },
   { href: "/compare", label: "Compare" },
   { href: "/faq", label: "FAQ" },
 ];
@@ -95,6 +96,11 @@ export function MarketingFooter() {
                 <li>
                   <Link href="/pricing" className="hover:text-foreground">
                     Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/savvy-nomad" className="hover:text-foreground">
+                    SavvyNomad alternative
                   </Link>
                 </li>
                 <li>

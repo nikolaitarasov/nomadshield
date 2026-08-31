@@ -3,7 +3,13 @@ import { DisclaimerNote } from "@/components/ui";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata: Metadata = { title: "Compare" };
+export const metadata: Metadata = {
+  title: "SavvyNomad vs NomadShield vs Escapees",
+  description:
+    "Honest comparison: SavvyNomad (Florida mailbox concierge), NomadShield (software playbook + audit vault), Escapees, and DIY. Pricing, mail, South Dakota, and what happens after you move.",
+  keywords: ["SavvyNomad vs NomadShield", "Savvy Nomad comparison", "Escapees vs SavvyNomad", "Florida domicile comparison"],
+  alternates: { canonical: "/compare" },
+};
 
 const ROWS: [string, string, string, string, string][] = [
   [

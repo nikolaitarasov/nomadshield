@@ -1,7 +1,14 @@
 import { Calculator, ShieldDemo } from "@/components/calculator";
+import { JsonLd } from "@/components/json-ld";
 import { MarketingShell } from "@/components/marketing";
 import { Card } from "@/components/ui";
+import { DEFAULT_DESCRIPTION, siteUrl } from "@/lib/seo";
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const STEPS = [
   { n: "01", title: "Address & mail", body: "Connect Anytime Mailbox, PostScan, iPostal1, Traveling Mailbox, Escapees, or US Global Mail. Or type the address. We do not make you rent ours." },
@@ -15,12 +22,29 @@ const STEPS = [
 export default function HomePage() {
   return (
     <MarketingShell>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "NomadShield",
+          url: siteUrl(),
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web",
+          description: DEFAULT_DESCRIPTION,
+          offers: {
+            "@type": "AggregateOffer",
+            lowPrice: "0",
+            highPrice: "190",
+            priceCurrency: "USD",
+          },
+        }}
+      />
       <section className="relative overflow-hidden bg-glow">
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-70" />
         <div className="relative mx-auto grid max-w-6xl items-start gap-8 px-4 pb-16 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pt-16">
           <div className="order-2 animate-fade-up lg:order-1">
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">
-              For US nomads leaving CA, NY, NJ, IL, MN, MA
+              SavvyNomad alternative · US nomads leaving CA, NY, NJ, IL, MN, MA
             </p>
             <h1 className="mt-3 max-w-xl text-4xl font-semibold tracking-tight sm:text-5xl">
               Leave the high-tax state.
@@ -229,6 +253,21 @@ export default function HomePage() {
         <Link href="/compare" className="mt-4 inline-flex text-sm text-accent hover:underline">
           Add Escapees and DIY →
         </Link>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <div className="surface p-6 sm:p-8">
+          <p className="text-[11px] font-medium uppercase tracking-wider text-accent">Searched Savvy Nomad?</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight">We are the SavvyNomad alternative — not a cheaper warehouse.</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+            SavvyNomad is a Florida mailbox concierge. NomadShield is domicile software: keep Anytime Mailbox / PostScan /
+            iPostal1 / Traveling Mailbox / Escapees, run a 6-step playbook the same session, and keep a 183-day audit
+            file after you move. They discontinued South Dakota. We still tell you when Florida or Texas is safer.
+          </p>
+          <Link href="/savvy-nomad" className="mt-5 inline-flex text-sm text-accent hover:underline">
+            SavvyNomad vs NomadShield — full write-up →
+          </Link>
+        </div>
       </section>
     </MarketingShell>
   );

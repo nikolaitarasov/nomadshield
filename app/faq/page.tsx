@@ -1,8 +1,15 @@
+import { JsonLd } from "@/components/json-ld";
 import { MarketingShell } from "@/components/marketing";
 import { DisclaimerNote } from "@/components/ui";
 import type { Metadata } from "next";
+import Link from "next/link";
 
-export const metadata: Metadata = { title: "FAQ" };
+export const metadata: Metadata = {
+  title: "FAQ — domicile, 183 days, SavvyNomad, W-2 payroll",
+  description:
+    "Is NomadShield legal? Do you need to visit Florida? What is 183 days? How does this differ from SavvyNomad? W-2 payroll, FEIE, and mailbox FAQs for US digital nomads.",
+  alternates: { canonical: "/faq" },
+};
 
 const FAQS = [
   {
@@ -34,8 +41,12 @@ const FAQS = [
     a: "Yes. That is the point. Connect (preview) or paste the CMRA address exactly as printed — PMB vs suite matters for banks. We do not run a proprietary warehouse in this MVP.",
   },
   {
+    q: "Is NomadShield the same as SavvyNomad?",
+    a: "No. SavvyNomad is a Florida mailbox-plus-concierge (proprietary warehouse, ~$55–$265/mo plus extras). NomadShield is software: a 6-step playbook, generated packets, and a 183-day audit vault. Keep the mailbox you already have. Full write-up: SavvyNomad alternative.",
+  },
+  {
     q: "Why isn’t South Dakota the default?",
-    a: "Because it isn’t easy anymore. Legislative, payroll-provider, banking, and DMV friction is why at least one well-known Florida concierge discontinued SD. We still ship an SD playbook — with warnings, not a wink.",
+    a: "Because it isn’t easy anymore. Legislative, payroll-provider, banking, and DMV friction is why SavvyNomad discontinued SD. We still ship an SD playbook — with warnings, not a wink.",
   },
   {
     q: "Do I need a CPA?",
@@ -46,6 +57,17 @@ const FAQS = [
 export default function FaqPage() {
   return (
     <MarketingShell>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQS.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }}
+      />
       <div className="mx-auto max-w-3xl px-4 py-16">
         <p className="text-[11px] font-medium uppercase tracking-wider text-accent">FAQ</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight">Straight answers. No domicile folklore.</h1>
@@ -57,6 +79,13 @@ export default function FaqPage() {
             </details>
           ))}
         </div>
+        <p className="mt-8 text-sm text-muted">
+          Comparing mailbox concierges? Read the{" "}
+          <Link href="/savvy-nomad" className="text-accent hover:underline">
+            SavvyNomad alternative
+          </Link>{" "}
+          page.
+        </p>
         <DisclaimerNote className="mt-10" />
       </div>
     </MarketingShell>

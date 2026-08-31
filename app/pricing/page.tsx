@@ -3,7 +3,12 @@ import { DisclaimerNote } from "@/components/ui";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata: Metadata = { title: "Pricing" };
+export const metadata: Metadata = {
+  title: "Pricing — $49 kit, $19/mo Shield (vs SavvyNomad $55–$265/mo)",
+  description:
+    "NomadShield flat pricing vs SavvyNomad’s $55–$265/mo warehouse plans. Free calculator, $49 one-time Migration Kit, $19/mo Audit Shield. No scan overages — we don’t host your mail.",
+  alternates: { canonical: "/pricing" },
+};
 
 const TIERS = [
   {

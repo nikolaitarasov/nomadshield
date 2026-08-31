@@ -1,4 +1,5 @@
 import { Providers } from "@/components/providers";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, siteUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -14,13 +15,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
-    default: "NomadShield — Domicile playbooks & audit protection for US nomads",
+    default: DEFAULT_TITLE,
     template: "%s · NomadShield",
   },
-  description:
-    "Self-serve US tax-domicile setup and 183-day audit vault for digital nomads leaving CA, NY, NJ, IL, MN, and MA. Keep your mailbox. Flat pricing. Not a CPA.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  description: DEFAULT_DESCRIPTION,
+  keywords: [
+    "SavvyNomad alternative",
+    "Savvy Nomad alternative",
+    "Florida domicile digital nomad",
+    "US tax domicile",
+    "183 day log",
+    "leave California taxes",
+    "NomadShield",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "NomadShield",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    url: siteUrl(),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
