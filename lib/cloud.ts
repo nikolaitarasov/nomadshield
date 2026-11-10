@@ -62,6 +62,7 @@ function profileFromRow(row: Record<string, unknown>, email: string): Profile {
   };
 }
 
+/** Browser-writable profile columns. plan / billing_interval are server-owned (see 002_billing.sql). */
 export function profileToRow(profile: Profile) {
   return {
     id: profile.id,
@@ -74,12 +75,10 @@ export function profileToRow(profile: Profile) {
     owns_property_in_from_state: profile.ownsPropertyInFromState,
     mailbox_provider: profile.mailboxProvider || null,
     mailbox_address: profile.mailboxAddress,
-    plan: profile.plan,
     tax_year_start: profile.taxYearStart || null,
     watch_state: profile.watchState || null,
     disclaimer_version: profile.disclaimerVersion,
     concierge_waitlist: profile.conciergeWaitlist,
-    billing_interval: profile.billingInterval,
     onboarded: profile.onboarded,
     created_at: profile.createdAt,
   };

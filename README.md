@@ -63,7 +63,18 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 Set `NEXT_PUBLIC_APP_URL` to the Render URL. Stripe Checkout Sessions work with **only** `STRIPE_SECRET_KEY` (products are created inline at $49 / $19/mo / $190/yr). Optional: Dashboard Payment Links (`NEXT_PUBLIC_STRIPE_LINK_*`) or existing Price IDs.
 
 Webhook endpoint: `https://<your-service>.onrender.com/api/stripe/webhook`  
-Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`.
+Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `customer.subscription.updated`, `customer.subscription.deleted`, `charge.refunded`.
+
+### Billing model (who has paid for what)
+
+The plan is **server-owned**. The browser never writes `profiles.plan`; a DB trigger (`supabase/migrations/002_billing.sql`) enforces it.
+
+- `lib/entitlements.ts`: the pure state machine. `transition(status, event)` per purchase (`pending → active ⇄ past_due → canceled`, plus `failed`, `refunded`) and `derivePlan(purchases)` → `free | kit | shield`. Tests: `npm test`.
+- `lib/billing-server.ts`: Stripe objects → events → `public.purchases` rows → `profiles.plan`. Idempotent; a failed write returns 500 so Stripe retries.
+- `POST /api/billing/sync`: the signed-in browser asks the server to verify a Checkout Session, claim purchases paid with the user's verified email (pay first, sign up later, any device), and return the plan.
+- Users with no `purchases` rows (paid before 002, comped by hand, demo) keep their current plan.
+
+Without Supabase (local demo) the plan lives in the browser, as before.
 
 ### Google Search Console (sitemap)
 

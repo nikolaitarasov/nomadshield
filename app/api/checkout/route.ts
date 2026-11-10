@@ -58,6 +58,8 @@ export async function POST(request: Request) {
       customer_email: email || undefined,
       client_reference_id: userId || undefined,
       metadata: { plan, interval, userId, email },
+      // Copied onto the subscription so renewal/cancel webhooks can find the purchase on their own.
+      ...(item.mode === "subscription" ? { subscription_data: { metadata: { plan, interval, userId, email } } } : {}),
       allow_promotion_codes: true,
       billing_address_collection: "auto",
     });

@@ -3,7 +3,7 @@
  * Usage: node scripts/provision-supabase.mjs
  */
 import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -125,8 +125,11 @@ if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 console.log("1. Applying schema…");
-const migration = readFileSync(join(ROOT, "supabase/migrations/001_init.sql"), "utf8");
-await sql(token, migration);
+// Every migration is idempotent; apply all of them in filename order.
+for (const file of readdirSync(join(ROOT, "supabase/migrations")).filter((f) => f.endsWith(".sql")).sort()) {
+  console.log(`   ${file}`);
+  await sql(token, readFileSync(join(ROOT, "supabase/migrations", file), "utf8"));
+}
 const tables = await sql(
   token,
   "select table_name from information_schema.tables where table_schema='public' and table_type='BASE TABLE' order by 1",

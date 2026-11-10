@@ -7,6 +7,11 @@ export const SHIELD_YEAR_CENTS = 19000;
 
 export const ENTITLEMENT_KEY = "nomadshield:entitlement";
 
+/**
+ * A verified Stripe Checkout Session remembered on this device.
+ * Cloud mode: only a *pending claim* — sent to /api/billing/sync on the next sign-in, never trusted
+ * as a plan. Local demo mode (no Supabase): applied directly, since there is no server.
+ */
 export type Entitlement = {
   sessionId: string;
   plan: PayablePlan;
@@ -75,5 +80,14 @@ export function loadEntitlement(): Entitlement | null {
     return JSON.parse(raw) as Entitlement;
   } catch {
     return null;
+  }
+}
+
+export function clearEntitlement() {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(ENTITLEMENT_KEY);
+  } catch {
+    /* storage blocked */
   }
 }

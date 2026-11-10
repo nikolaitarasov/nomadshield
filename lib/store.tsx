@@ -48,7 +48,8 @@ import type {
 } from "./types";
 import { uid } from "./utils";
 import { letterBody } from "./letters";
-import { loadEntitlement } from "./billing";
+import { clearEntitlement, loadEntitlement } from "./billing";
+import { syncBilling, type BillingSync } from "./pay-client";
 
 function defaultDB(): AppDB {
   return emptyDB();
@@ -151,9 +152,48 @@ async function applyCloudSession(userId: string, email: string) {
       next = initMigration(userId, next.profiles[userId]?.targetState ?? "FL", next);
       void pushWorkspaceSlice(next, userId);
     }
-    return applyEntitlement(next, userId);
+    return next;
   });
+  void refreshBilling().catch((err) => console.warn("billing sync", (err as Error).message));
   return true;
+}
+
+let billingInFlight: Promise<BillingSync | null> | null = null;
+
+/**
+ * Cloud mode: ask the server for the authoritative plan (claiming any purchase made on this device
+ * before sign-in) and mirror it locally. No-op without Supabase.
+ */
+function refreshBilling(sessionId?: string): Promise<BillingSync | null> {
+  if (!sessionId && billingInFlight) return billingInFlight;
+  const run = (async () => {
+    const sb = getSupabaseBrowser();
+    if (!sb) return null;
+    const { data } = await sb.auth.getSession();
+    const token = data.session?.access_token;
+    const userId = data.session?.user.id;
+    if (!token || !userId) return null;
+    const pending = sessionId || loadEntitlement()?.sessionId;
+    const result = await syncBilling(token, pending);
+    if (pending) clearEntitlement();
+    patch((d) => {
+      const current = d.profiles[userId];
+      if (!current || (current.plan === result.plan && current.billingInterval === result.interval)) return d;
+      return {
+        ...d,
+        profiles: { ...d.profiles, [userId]: { ...current, plan: result.plan, billingInterval: result.interval } },
+      };
+    });
+    return result;
+  })();
+  if (!sessionId) {
+    billingInFlight = run;
+    run.then(
+      () => (billingInFlight = null),
+      () => (billingInFlight = null),
+    );
+  }
+  return run;
 }
 
 function useDB(): AppDB {
@@ -185,6 +225,7 @@ type AppContextValue = {
   updateProfile: (partial: Partial<Profile>) => void;
   completeOnboarding: (partial: Partial<Profile>) => void;
   setPlan: (plan: Plan, interval?: "month" | "year") => void;
+  refreshBilling: (sessionId?: string) => Promise<BillingSync | null>;
   setItemStatus: (stepKey: StepKey, itemKey: string, status: ItemStatus, metadata?: Record<string, unknown>) => void;
   saveMailbox: (addr: MailboxAddress) => void;
   upsertPresence: (date: string, bucket: PresenceBucket | null, extra?: { formerState?: string; note?: string }) => void;
@@ -252,10 +293,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           profiles: { ...d.profiles, [userId]: profile },
         };
         next = initMigration(userId, profile.targetState, next);
-        next = applyEntitlement(next, userId);
         void pushWorkspaceSlice(next, userId);
         return next;
       });
+      void refreshBilling().catch(() => {});
       return { ok: true };
     }
 
@@ -307,10 +348,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
           profiles: { ...d.profiles, [userId]: profile },
         };
         next = initMigration(userId, profile.targetState, next);
-        next = applyEntitlement(next, userId);
         void pushWorkspaceSlice(next, userId);
         return next;
       });
+      void refreshBilling().catch(() => {});
       return { ok: true, userId };
     }
 
@@ -390,7 +431,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  /** Local demo mode only. With Supabase the plan is server-owned: use refreshBilling(). */
   const setPlan = useCallback((plan: Plan, interval: "month" | "year" = "month") => {
+    if (isSupabaseConfigured()) return;
     updateProfile({ plan, billingInterval: interval });
   }, [updateProfile]);
 
@@ -636,6 +679,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       updateProfile,
       completeOnboarding,
       setPlan,
+      refreshBilling,
       setItemStatus,
       saveMailbox,
       upsertPresence,
@@ -703,7 +747,9 @@ export function hasShield(plan: Plan | undefined) {
   return plan === "shield";
 }
 
+/** Local demo mode only: there is no server to verify against, so the device's receipt is the plan. */
 function applyEntitlement(db: AppDB, userId: string): AppDB {
+  if (isSupabaseConfigured()) return db;
   const e = loadEntitlement();
   if (!e) return db;
   const current = db.profiles[userId];

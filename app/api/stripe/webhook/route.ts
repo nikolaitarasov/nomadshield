@@ -1,3 +1,4 @@
+import { applyPurchaseEvent, interpretStripeEvent } from "@/lib/billing-server";
 import { getStripe } from "@/lib/stripe";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
@@ -6,6 +7,12 @@ import type Stripe from "stripe";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+/**
+ * Stripe → purchases state machine (lib/entitlements.ts).
+ * Subscribe the endpoint to: checkout.session.completed, checkout.session.async_payment_succeeded,
+ * checkout.session.async_payment_failed, customer.subscription.updated,
+ * customer.subscription.deleted, charge.refunded.
+ */
 export async function POST(request: Request) {
   const stripe = getStripe();
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -23,21 +30,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `Invalid signature: ${(err as Error).message}` }, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    await fulfill(session);
-  }
-
-  return NextResponse.json({ received: true });
-}
-
-async function fulfill(session: Stripe.Checkout.Session) {
-  const plan = session.metadata?.plan === "shield" ? "shield" : session.metadata?.plan === "kit" ? "kit" : null;
-  if (!plan) return;
-  const interval = session.metadata?.interval === "year" ? "year" : "month";
-  const userId = session.client_reference_id || session.metadata?.userId;
-  if (!userId) return;
   const sb = getSupabaseAdmin();
-  if (!sb) return;
-  await sb.from("profiles").update({ plan, billing_interval: interval }).eq("id", userId);
+  if (!sb) return NextResponse.json({ received: true, skipped: "supabase not configured" });
+
+  try {
+    const interpreted = await interpretStripeEvent(stripe, event);
+    if (!interpreted) return NextResponse.json({ received: true, ignored: event.type });
+    const result = await applyPurchaseEvent(sb, stripe, interpreted.ref, interpreted.event);
+    return NextResponse.json({ received: true, type: event.type, ...result });
+  } catch (err) {
+    // 5xx makes Stripe retry with backoff, so a transient DB error never loses a payment.
+    console.error("stripe webhook", event.type, event.id, err);
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+  }
 }
